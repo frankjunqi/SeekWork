@@ -1,0 +1,16 @@
+.gradle/
+.idea/
+*.iml
+build/
+gen/
+local.properties
+*/build
+*/project.properties
+*/.gitignore
+/app/src/main/assets/DIY/DIYHtmlTemplate/*.html
+/build_project.gradle
+/aars
+/projectFilesBackup
+/app/maindexlist.txt
+/app/.bugtags.log
+/gradlew.bat

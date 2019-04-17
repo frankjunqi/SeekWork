@@ -1,0 +1,49 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="min_height">45dp</dimen>
+
+    <dimen name="height_btn_manager">126dp</dimen>
+
+    <dimen name="height_btn_manager_goods">110dp</dimen>
+
+
+    <dimen name="padding_left_right">100dp</dimen>
+
+    <dimen name="manager_padding_left_right">50dp</dimen>
+    <dimen name="manager_abc_size">30sp</dimen>
+
+    <dimen name="keybord_text_size">42sp</dimen>
+    <dimen name="big_text_size">58sp</dimen>
+
+    <dimen name="mainpage_small_text_size">30sp</dimen>
+
+    <dimen name="mainpage_bottom_text_size">24sp</dimen>
+
+    <dimen name="actionbar_title_size">56sp</dimen>
+    <dimen name="actionbar_right_size">50sp</dimen>
+
+    <dimen name="mainpage_title_size">50sp</dimen>
+    <dimen name="mainpage_machine_size">36sp</dimen>
+
+    <dimen name="mainpage_sub_title_size">44sp</dimen>
+
+    <dimen name="middle_text_size">40sp</dimen>
+
+    <dimen name="paluse_size">60sp</dimen>
+    <dimen name="paluse_small_size">20sp</dimen>
+
+    <dimen name="card_page">35sp</dimen>
+
+    <dimen name="result_page">50sp</dimen>
+
+    <dimen name="keyborad_title">50sp</dimen>
+    <dimen name="keyborad_value">50sp</dimen>
+
+    <dimen name="btn_min_height">42dp</dimen>
+
+    <dimen name="btn_height">80dp</dimen>
+
+</resources>

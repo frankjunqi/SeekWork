@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SeekWork</string>
+    <string name="auth_title">设备授权验证中，请稍等....</string>
+</resources>
