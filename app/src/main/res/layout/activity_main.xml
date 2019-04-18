@@ -70,7 +70,9 @@
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:background="@drawable/selector_btn_take"
-            android:text="取货" />
+            android:text="取货"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -92,7 +94,9 @@
                 android:layout_marginRight="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_borrow"
-                android:text="借货" />
+                android:text="借货"
+                android:textColor="@android:color/white"
+                android:textSize="22sp" />
 
             <Button
                 android:id="@+id/btn_back"
@@ -103,7 +107,9 @@
                 android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_back"
-                android:text="还货" />
+                android:text="还货"
+                android:textColor="@android:color/white"
+                android:textSize="22sp" />
         </LinearLayout>
     </LinearLayout>
 
