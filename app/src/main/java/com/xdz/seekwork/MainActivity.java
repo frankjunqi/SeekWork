@@ -15,6 +15,8 @@ import com.xdz.seekwork.network.api.Host;
 import com.xdz.seekwork.network.api.SeekerSoftService;
 import com.xdz.seekwork.network.entity.takeout.TakeOutResBody;
 import com.xdz.seekwork.network.gsonfactory.GsonConverterFactory;
+import com.xdz.seekwork.test.TestNewVendingActivity;
+import com.xdz.seekwork.test.TestReadActivity;
 import com.xdz.seekwork.util.DeviceInfoTool;
 import com.xdz.seekwork.util.LogCat;
 import com.xdz.seekwork.util.SeekerSoftConstant;
@@ -81,10 +83,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(MainActivity.this, TakeActivity.class);
             startActivity(intent);
         } else if (v.getId() == R.id.btn_borrow) {
-            Intent intent = new Intent(MainActivity.this, BorrowActivity.class);
+            Intent intent = new Intent(MainActivity.this, TestReadActivity.class);
             startActivity(intent);
         } else if (v.getId() == R.id.btn_back) {
-            Intent intent = new Intent(MainActivity.this, BackActivity.class);
+            Intent intent = new Intent(MainActivity.this, TestNewVendingActivity.class);
             startActivity(intent);
         }
     }
