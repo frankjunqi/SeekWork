@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_back = findViewById(R.id.btn_back);
         btn_back.setOnClickListener(this);
 
+        TextView tv_num = findViewById(R.id.tv_num);
+        tv_num.setOnClickListener(this);
+
         deviceStr = DeviceInfoTool.getDeviceId();
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -88,6 +91,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (v.getId() == R.id.btn_back) {
             Intent intent = new Intent(MainActivity.this, TestNewVendingActivity.class);
             startActivity(intent);
+        } else if (v.getId() == R.id.tv_num) {
+            Intent intent = new Intent(MainActivity.this, ManageActivity.class);
+            startActivity(intent);
+
         }
     }
 

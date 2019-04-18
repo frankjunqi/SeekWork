@@ -40,4 +40,7 @@
     <color name="btn_back_un_press">#CAAC1E</color>
     <color name="btn_back_press">#BD9D09</color>
 
+    <color name="btn_red_un_press">#D23548</color>
+    <color name="btn_red_press">#FFD0021B</color>
+
 </resources>
