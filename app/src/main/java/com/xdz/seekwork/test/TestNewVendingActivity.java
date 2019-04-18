@@ -2,6 +2,7 @@ package com.xdz.seekwork.test;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,7 +11,6 @@ import android.widget.TextView;
 import com.xdz.seekwork.R;
 import com.xdz.seekwork.serialport.ShipmentObject;
 import com.xdz.seekwork.serialport.VendingSerialPort;
-import com.xdz.seekwork.util.LogCat;
 
 
 /**
@@ -49,42 +49,73 @@ public class TestNewVendingActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_out:
-                int col = Integer.parseInt(et_col.getText().toString());
-                int row = Integer.parseInt(et_row.getText().toString());
+                String col_str = et_col.getText().toString();
+                String row_str = et_row.getText().toString();
+
+                if (TextUtils.isEmpty(col_str) || TextUtils.isEmpty(row_str)) {
+                    return;
+                }
+
+                int col = Integer.parseInt(col_str);
+                int row = Integer.parseInt(row_str);
                 tv_showdata.setText(col + " " + row);
                 ShipmentObject shipmentObject = new ShipmentObject();
                 shipmentObject.containerNum = 1;
                 shipmentObject.proNum = col * 10 + row;
                 shipmentObject.objectId = count++;
 
-                VendingSerialPort.SingleInit().pushCmdOutShipment(shipmentObject).setOnCmdCallBackListen(new VendingSerialPort.OnCmdCallBackListen() {
+                VendingSerialPort.SingleInit().pushCmdOutShipment(shipmentObject).setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
                     @Override
-                    public void onCmdCallBack(boolean isSuccess) {
-                        LogCat.e("<<< error" + tv_showdata.getText() + " -- " + isSuccess);
+                    public void onDataReceiveString(final String ResultStr) {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                byte[] bytes = ResultStr.getBytes();
+                            }
+                        });
                     }
-                });
+                }).commadTakeOut();
+
                 break;
 
             case R.id.btn_gezi:
-                int col1 = Integer.parseInt(et_col.getText().toString());
-                int row1 = Integer.parseInt(et_row.getText().toString());
+                String col_str_ = et_col.getText().toString();
+                String row_str_ = et_row.getText().toString();
+
+                if (TextUtils.isEmpty(col_str_) || TextUtils.isEmpty(row_str_)) {
+                    return;
+                }
+
+                int col1 = Integer.parseInt(col_str_);
+                int row1 = Integer.parseInt(row_str_);
                 tv_showdata.setText(col1 + " " + row1);
                 ShipmentObject shipmentObjectG = new ShipmentObject();
                 shipmentObjectG.containerNum = 2;
                 shipmentObjectG.proNum = col1 * 10 + row1;
                 shipmentObjectG.objectId = count++;
 
-                VendingSerialPort.SingleInit().pushCmdOutShipment(shipmentObjectG).setOnCmdCallBackListen(new VendingSerialPort.OnCmdCallBackListen() {
+                VendingSerialPort.SingleInit().pushCmdOutShipment(shipmentObjectG).setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
                     @Override
-                    public void onCmdCallBack(boolean isSuccess) {
-                        LogCat.e("<<< gezi out result: " + tv_showdata.getText() + " -- " + isSuccess);
+                    public void onDataReceiveString(final String ResultStr) {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                byte[] bytes = ResultStr.getBytes();
+                            }
+                        });
                     }
-                });
+                }).commadTakeOut();
                 break;
 
         }
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        VendingSerialPort.SingleInit().closeSerialPort();
+    }
 }

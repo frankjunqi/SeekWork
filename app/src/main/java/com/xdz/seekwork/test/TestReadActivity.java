@@ -48,11 +48,6 @@ public class TestReadActivity extends AppCompatActivity {
                 });
 
             }
-
-            @Override
-            public void onDataReceiveBuffer(byte[] buffer, int size) {
-
-            }
         });
 
         btn_click.setOnClickListener(new View.OnClickListener() {
@@ -62,15 +57,6 @@ public class TestReadActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (cardReadSerialPort != null) {
-            cardReadSerialPort.closeReadSerial();
-        }
     }
 
     @Override
