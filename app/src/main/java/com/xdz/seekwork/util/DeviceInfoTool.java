@@ -13,7 +13,6 @@ import com.xdz.seekwork.SeekersoftApp;
 import java.util.UUID;
 
 /**
- * Created by kjh08490 on 2016/11/25.
  */
 
 public class DeviceInfoTool {

@@ -9,7 +9,6 @@ import android.net.NetworkInfo;
 
 /**
  * 监听网络变化
- * Created by kjh08490 on 2016/12/14.
  */
 
 public class NetworkBroadcastReceiver extends BroadcastReceiver {

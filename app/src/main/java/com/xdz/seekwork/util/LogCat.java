@@ -3,7 +3,6 @@ package com.xdz.seekwork.util;
 import android.text.TextUtils;
 
 /**
- * Created by Frank on 17/4/4.
  */
 
 public class LogCat {

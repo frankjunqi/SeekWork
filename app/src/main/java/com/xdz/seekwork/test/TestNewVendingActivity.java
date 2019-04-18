@@ -14,7 +14,6 @@ import com.xdz.seekwork.serialport.VendingSerialPort;
 
 
 /**
- * Created by Frank on 16/11/20.
  */
 
 public class TestNewVendingActivity extends AppCompatActivity implements View.OnClickListener {

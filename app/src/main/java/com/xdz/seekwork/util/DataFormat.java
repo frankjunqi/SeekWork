@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
- * Created by kjh08490 on 2016/12/2.
  */
 
 public class DataFormat {

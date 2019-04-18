@@ -3,7 +3,6 @@ package com.xdz.seekwork.network.entity.updata;
 import java.io.Serializable;
 
 /**
- * Created by kjh08490 on 2016/12/26.
  */
 
 public class UpdateResBody implements Serializable {

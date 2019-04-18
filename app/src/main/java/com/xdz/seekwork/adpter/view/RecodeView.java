@@ -12,7 +12,6 @@ import com.xdz.seekwork.adpter.model.RecodeItem;
 
 
 /**
- * Created by kjh08490 on 2017/6/16.
  */
 
 public class RecodeView extends RelativeLayout implements ItemView {

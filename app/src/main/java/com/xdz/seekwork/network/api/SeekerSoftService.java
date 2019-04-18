@@ -36,7 +36,6 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
- * Created by kjh08490 on 2016/3/16.
  */
 public interface SeekerSoftService {
 

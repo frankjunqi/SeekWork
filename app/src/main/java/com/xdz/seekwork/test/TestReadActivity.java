@@ -13,7 +13,6 @@ import com.xdz.seekwork.serialport.CardReadSerialPort;
 
 
 /**
- * Created by Frank on 18/1/7.
  */
 
 public class TestReadActivity extends AppCompatActivity {

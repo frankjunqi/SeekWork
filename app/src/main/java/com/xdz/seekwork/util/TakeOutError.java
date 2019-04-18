@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  * 出货异常错误类
- * Created by kjh08490 on 2016/12/14.
  */
 
 public class TakeOutError implements Serializable {

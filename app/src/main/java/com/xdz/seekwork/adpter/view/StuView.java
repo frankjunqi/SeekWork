@@ -14,7 +14,6 @@ import com.xdz.seekwork.adpter.model.Item;
 import com.xdz.seekwork.adpter.model.StuItem;
 
 /**
- * Created by kjh08490 on 2017/6/16.
  */
 
 public class StuView extends RelativeLayout implements ItemView {

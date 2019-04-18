@@ -13,7 +13,6 @@ import android.widget.Toast;
 import java.io.File;
 
 /**
- * Created by kjh08490 on 2015/7/25.
  * 针对内部下载的action进行安装的广播，而非系统下载器的完成的广播的接收者只在当前进程中接收action
  */
 public class TCTInsatllActionBroadcastReceiver extends BroadcastReceiver {

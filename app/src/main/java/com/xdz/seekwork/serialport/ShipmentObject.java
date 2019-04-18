@@ -2,7 +2,6 @@ package com.xdz.seekwork.serialport;
 
 /**
  * 出货指令实体类
- * Created by kjh08490 on 2017/2/14.
  */
 
 public class ShipmentObject {

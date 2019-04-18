@@ -11,7 +11,6 @@ import java.util.Stack;
 /**
  * Card Read Serial Port Util
  * <p>
- * Created by kjh08490 on 2016/11/1.
  */
 
 public class VendingSerialPort {

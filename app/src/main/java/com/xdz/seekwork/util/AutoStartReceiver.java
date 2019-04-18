@@ -8,7 +8,6 @@ import com.xdz.seekwork.MainActivity;
 
 
 /**
- * Created by kjh08490 on 2017/1/4.
  */
 
 public class AutoStartReceiver extends BroadcastReceiver {

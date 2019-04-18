@@ -1,7 +1,6 @@
 package com.xdz.seekwork.updateapk;
 
 /**
- * Created by kjh08490 on 2016/10/11.
  */
 
 import android.app.DownloadManager;
