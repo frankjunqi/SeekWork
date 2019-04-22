@@ -33,7 +33,7 @@ public class CardReadSerialPort {
     private boolean isStop = false;
 
     // device & baudrate
-    private String devicePath = "/dev/ttymxc3";
+    private String devicePath = "/dev/ttyS0";
     // tty02--- ttymxc1   ; ttyo3---ttymxc2  ;  tty04---ttymxc3  ;  tty05---ttymxc4  ;
     //   ICCard is OK        ICCard is Ok       ICCrad is not BAD     ICCard is OK
     // tty06---ttyES0  ; tty07---ttyES1 ;

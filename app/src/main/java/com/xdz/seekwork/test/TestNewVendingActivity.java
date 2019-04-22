@@ -3,6 +3,7 @@ package com.xdz.seekwork.test;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.xdz.seekwork.R;
 import com.xdz.seekwork.serialport.ShipmentObject;
 import com.xdz.seekwork.serialport.VendingSerialPort;
+import com.xdz.seekwork.util.LogCat;
 
 
 /**
@@ -58,19 +60,17 @@ public class TestNewVendingActivity extends AppCompatActivity implements View.On
                 int col = Integer.parseInt(col_str);
                 int row = Integer.parseInt(row_str);
                 tv_showdata.setText(col + " " + row);
-                ShipmentObject shipmentObject = new ShipmentObject();
-                shipmentObject.containerNum = 1;
-                shipmentObject.proNum = col * 10 + row;
-                shipmentObject.objectId = count++;
 
-                VendingSerialPort.SingleInit().pushCmdOutShipment(shipmentObject).setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
+                VendingSerialPort.SingleInit().pushCmdOutShipment(new ShipmentObject()).setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
                     @Override
                     public void onDataReceiveString(final String ResultStr) {
-
+                        //Log.e("TAG","recevie = "+ResultStr);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 byte[] bytes = ResultStr.getBytes();
+                                VendingSerialPort.SingleInit().pushCmdOutShipment(new ShipmentObject()).commadTakeOut();
+
                             }
                         });
                     }
@@ -89,15 +89,12 @@ public class TestNewVendingActivity extends AppCompatActivity implements View.On
                 int col1 = Integer.parseInt(col_str_);
                 int row1 = Integer.parseInt(row_str_);
                 tv_showdata.setText(col1 + " " + row1);
-                ShipmentObject shipmentObjectG = new ShipmentObject();
-                shipmentObjectG.containerNum = 2;
-                shipmentObjectG.proNum = col1 * 10 + row1;
-                shipmentObjectG.objectId = count++;
 
-                VendingSerialPort.SingleInit().pushCmdOutShipment(shipmentObjectG).setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
+                VendingSerialPort.SingleInit().pushCmdOutShipment(new ShipmentObject()).pushCmdOutShipment(new ShipmentObject()).setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
                     @Override
                     public void onDataReceiveString(final String ResultStr) {
 
+                        Log.e("TAG","recevie = "+ResultStr);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

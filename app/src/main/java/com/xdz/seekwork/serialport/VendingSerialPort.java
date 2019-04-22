@@ -2,6 +2,8 @@ package com.xdz.seekwork.serialport;
 
 import android.util.Log;
 
+import com.xdz.seekwork.util.LogCat;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,8 +28,8 @@ public class VendingSerialPort {
 
     private ReadThread mReadThread;
     private static boolean isStop = false;
-    private String devicePath = "/dev/ttymxc1";// tty02
-    private int baudrate = 19200;
+    private String devicePath = "/dev/ttyS3";// tty02
+    private int baudrate = 9600;
 
 
     // 出货队列
@@ -47,6 +49,7 @@ public class VendingSerialPort {
     // 出货
     public void commadTakeOut() {
         ShipmentObject shipmentObject = popCmdOutShipment();
+
         if (shipmentObject != null) {
             // 起始码 字节码 地址码 功能码 排序 Yn行 Xn列 转数 卸货时间S CRC低 CRC高 停止码
             byte[] sendData = new byte[12];
@@ -61,15 +64,71 @@ public class VendingSerialPort {
             sendData[6] = (byte) shipmentObject.proLie;
 
             sendData[7] = 0x01;
-            sendData[8] = 0x03;
+            sendData[8] = 0;
+
             sendData[9] = 0;
             sendData[10] = 0;
             sendData[11] = (byte) 0xFE;
+
             // 此处需要重新根据出货成功标识进行判断是否成功出货的回调
-            sendBuffer(sendData);
+            sendBuffer(crc(sendData));
         } else {
             return;
         }
+    }
+
+    private void test(){
+        byte[] sendData = new byte[7];
+        sendData[0] = (byte) 0xFF;
+        sendData[1]= 0x08;
+        sendData[2]= 0x00;
+        sendData[3]= (byte) 0xC0;
+        sendData[4]= 0x01;
+
+        int wcrc = CRC16(sendData,5);
+
+        int up = wcrc >> 8;
+        int low = wcrc &0x00ff;
+
+        sendData[5] = (byte) low;
+        sendData[6] = (byte) up;
+
+        Log.e("tag","wcrc="+wcrc+"="+sendData[5]+"="+sendData[6]);
+
+    }
+
+
+    public static int CRC16(byte[] Buf, int len) {
+        int CRC;
+        int i, j;
+        CRC = 0xffff;
+        for (i = 0; i < len; i++) {
+            CRC = CRC ^ (Buf[i] & 0xff);
+            for (j = 0; j < 8; j++) {
+                if ((CRC & 0x01) == 1){
+                    CRC = (CRC >> 1) ^ 0xA001;
+                }
+                else {
+                    CRC = CRC >> 1;
+                }
+            }
+        }
+        return CRC;
+    }
+
+    // FF0C00A30B01010103AAB7FE
+    private byte[] crc(byte[] data){
+
+        int wcrc = CRC16(data,9);
+
+        int up = wcrc >> 8;
+        int low = wcrc &0x00ff;
+
+
+        data[9] = (byte) low;
+        data[10] = (byte) up;
+
+        return data;
     }
 
     // 往堆栈中压人出货指令
@@ -126,7 +185,7 @@ public class VendingSerialPort {
         public void run() {
             super.run();
             // 起始码 字节码 地址码 功能码 排序 Yn行 Xn列 转数 卸货时间S 开关状态 掉货状态 CRC低 CRC高 停止码
-            String takeOutResult = "";
+            byte[] backData = new byte[14];
             while (!isStop && !isInterrupted()) {
                 // 串口开启，做读取数据
                 int size = 1;
@@ -134,20 +193,14 @@ public class VendingSerialPort {
                     if (mInputStream == null) {
                         return;
                     }
-                    byte[] buffer = new byte[1];
-                    size = mInputStream.read(buffer);
-                    takeOutResult = takeOutResult + new String(buffer, 0, size);
-                    Log.e("tag", "takeOutResult = " + takeOutResult);
+                    size = mInputStream.read(backData);
+                    String hexStr = bytesToHexString(backData);
+                    Log.e("TAG",  "bytetostr="+hexStr+",size="+size);
                     // 默认以 "0xFE" 结束读取
-                    if ("0xFE".equals(buffer)) {
+                    if (hexStr.endsWith("FE")) {
                         if (null != onDataReceiveListener) {
-                            onDataReceiveListener.onDataReceiveString(takeOutResult);
-                            takeOutResult = "";
+                            onDataReceiveListener.onDataReceiveString(hexStr);
                         }
-                    }
-                    // 默认以 "0xFE" 结束读取 再次检查是否有要出货的命令stack
-                    if ("0xFE".equals(buffer)) {
-                        commadTakeOut();
                     }
 
                 } catch (Exception e) {
@@ -164,7 +217,7 @@ public class VendingSerialPort {
      *
      * @return HexString
      */
-    public static final String bytesToHexString(byte[] bArray) {
+    public  String bytesToHexString(byte[] bArray) {
         StringBuffer sb = new StringBuffer(bArray.length);
         String sTemp;
         for (int i = 0; i < bArray.length; i++) {
@@ -213,6 +266,8 @@ public class VendingSerialPort {
         byte[] mBufferTemp = new byte[mBuffer.length];
         System.arraycopy(mBuffer, 0, mBufferTemp, 0, mBuffer.length);
         //注意：我得项目中需要在每次发送后面加\r\n，大家根据项目项目做修改，也可以去掉，直接发送mBuffer
+        Log.e("TAG","send com = "+bytesToHexString(mBuffer));
+
         try {
             if (mOutputStream != null) {
                 mOutputStream.write(mBufferTemp);

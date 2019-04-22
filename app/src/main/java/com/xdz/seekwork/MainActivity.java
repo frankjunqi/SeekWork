@@ -1,5 +1,6 @@
 package com.xdz.seekwork;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,13 +22,16 @@ import com.xdz.seekwork.util.DeviceInfoTool;
 import com.xdz.seekwork.util.LogCat;
 import com.xdz.seekwork.util.SeekerSoftConstant;
 
+import java.util.List;
+
+import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
 // 首页
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,EasyPermissions.PermissionCallbacks {
 
     private Button btn_take, btn_borrow, btn_back;
 
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ProgressBar pb_loadingdata;
     private Button btn_try;
 
+    public final static String[] PERMS_WRITE ={Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.WRITE_SETTINGS};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 授权弹框
         promissionDialog.show();
+
+        EasyPermissions.requestPermissions(this,"请求权限",12,PERMS_WRITE);
     }
 
     @Override
@@ -127,4 +134,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+    }
 }
