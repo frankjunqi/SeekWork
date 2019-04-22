@@ -124,14 +124,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updateAction.enqueue(new Callback<SrvResult<MMachineInfo>>() {
             @Override
             public void onResponse(Call<SrvResult<MMachineInfo>> call, Response<SrvResult<MMachineInfo>> response) {
-                if (response != null && response.body() != null && response.body().getStatus() == 1 && response.body().getData() != null
-                        && response.body().getData().isAuthorize()) {
+                if (response != null && response.body() != null && response.body().getStatus() == 1 && response.body().getData() != null && response.body().getData().isAuthorize()) {
                     LogCat.e("Status: " + response.body().getStatus());
-
                     SeekerSoftConstant.MachineNo = response.body().getData().getMachineNo();
                     tv_num.setText("设备编号：" + response.body().getData().getMachineNo());
                     tv_name.setText("紧急联系人：" + response.body().getData().getContacts() + "  " + response.body().getData().getNumbers());
-
                     // 成功授权显示逻辑
                     promissionDialog.dismiss();
                     // 成功授权取消加载进度
@@ -144,6 +141,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tv_error.setText("错误：" + response.body().getMsg());
                     pb_loadingdata.setVisibility(View.GONE);
                     btn_try.setVisibility(View.VISIBLE);
+                    // TODO 开启定时器 10秒再发送一次请求直到成功 才关闭这个模态框 关闭这个重试定时器
+
                 }
             }
 
