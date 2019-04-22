@@ -10,19 +10,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.xdz.seekwork.network.api.Host;
 import com.xdz.seekwork.network.api.SeekWorkService;
-import com.xdz.seekwork.network.api.SeekerSoftService;
 import com.xdz.seekwork.network.api.SrvResult;
-import com.xdz.seekwork.network.entity.machineinfo.MMachineInfo;
-import com.xdz.seekwork.network.entity.takeout.TakeOutResBody;
+import com.xdz.seekwork.network.entity.seekwork.MMachineInfo;
 import com.xdz.seekwork.network.gsonfactory.GsonConverterFactory;
 import com.xdz.seekwork.test.TestNewVendingActivity;
 import com.xdz.seekwork.test.TestReadActivity;
-import com.xdz.seekwork.util.DeviceInfoTool;
 import com.xdz.seekwork.util.LogCat;
 import com.xdz.seekwork.util.SeekerSoftConstant;
 
@@ -134,6 +130,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // 成功授权取消加载进度
                     pb_loadingdata.setVisibility(View.GONE);
                     btn_try.setVisibility(View.VISIBLE);
+
+                    // TODO 检查是否是管理员
+                    loginValidate("1234r43234rdc");
+
                 } else {
                     if (!promissionDialog.isShowing()) {
                         promissionDialog.show();
@@ -162,6 +162,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btn_try.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    private void loginValidate(String cardNo) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
+        SeekWorkService service = retrofit.create(SeekWorkService.class);
+        Call<SrvResult<Boolean>> updateAction = service.loginValidate(SeekerSoftConstant.MachineNo, cardNo);
+        LogCat.e("loginValidate = " + updateAction.request().url().toString());
+        updateAction.enqueue(new Callback<SrvResult<Boolean>>() {
+            @Override
+            public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
+                if (response != null && response.body() != null && response.body().getStatus() == 1 && response.body().getData()) {
+                    // TODO 打开管理员页面
+                } else {
+                    // 不是管理员卡，不需要做任何操作
+                    LogCat.e("提示信息：" + response.body().getMsg());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SrvResult<Boolean>> call, Throwable throwable) {
+
+            }
+        });
+
     }
 
     @Override

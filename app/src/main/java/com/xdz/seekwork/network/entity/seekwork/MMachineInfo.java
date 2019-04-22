@@ -1,4 +1,4 @@
-package com.xdz.seekwork.network.entity.machineinfo;
+package com.xdz.seekwork.network.entity.seekwork;
 
 import java.io.Serializable;
 
