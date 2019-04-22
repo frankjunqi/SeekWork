@@ -10,10 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.xdz.seekwork.network.api.Host;
+import com.xdz.seekwork.network.api.SeekWorkService;
 import com.xdz.seekwork.network.api.SeekerSoftService;
+import com.xdz.seekwork.network.api.SrvResult;
+import com.xdz.seekwork.network.entity.machineinfo.MMachineInfo;
 import com.xdz.seekwork.network.entity.takeout.TakeOutResBody;
 import com.xdz.seekwork.network.gsonfactory.GsonConverterFactory;
 import com.xdz.seekwork.test.TestNewVendingActivity;
@@ -31,18 +35,21 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 // 首页
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,EasyPermissions.PermissionCallbacks {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
 
     private Button btn_take, btn_borrow, btn_back;
 
-    private String deviceStr;
+    private TextView tv_error;
 
     private MaterialDialog promissionDialog;
 
     private ProgressBar pb_loadingdata;
     private Button btn_try;
 
-    public final static String[] PERMS_WRITE ={Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.WRITE_SETTINGS};
+    private TextView tv_num, tv_name;
+
+    public final static String[] PERMS_WRITE = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_SETTINGS};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,23 +61,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_back = findViewById(R.id.btn_back);
         btn_back.setOnClickListener(this);
 
+        tv_num = findViewById(R.id.tv_num);
+        tv_name = findViewById(R.id.tv_name);
+
         TextView tv_num = findViewById(R.id.tv_num);
         tv_num.setOnClickListener(this);
-
-        deviceStr = DeviceInfoTool.getDeviceId();
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View customView = inflater.inflate(R.layout.pop_auth_layout, null);
 
         pb_loadingdata = customView.findViewById(R.id.pb_loadingdata);
+        tv_error = customView.findViewById(R.id.tv_error);
 
         TextView tv_machine = customView.findViewById(R.id.tv_machine);
-        tv_machine.setText("设备号：" + deviceStr);
+        tv_machine.setText("设备号：" + SeekerSoftConstant.DEVICEID);
         btn_try = customView.findViewById(R.id.btn_try);
         btn_try.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 加载进度
+                tv_error.setText("");
                 pb_loadingdata.setVisibility(View.VISIBLE);
                 btn_try.setVisibility(View.GONE);
                 // 请求接口
@@ -82,9 +92,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         promissionDialog.setCancelable(false);
 
         // 授权弹框
-        promissionDialog.show();
+        registerMachine();
 
-        EasyPermissions.requestPermissions(this,"请求权限",12,PERMS_WRITE);
+        EasyPermissions.requestPermissions(this, "请求权限", 12, PERMS_WRITE);
     }
 
     @Override
@@ -108,26 +118,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void registerMachine() {
         // 异步加载(get)
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
-        SeekerSoftService service = retrofit.create(SeekerSoftService.class);
-        Call<TakeOutResBody> updateAction = service.takeOut(SeekerSoftConstant.DEVICEID, "", "", "");
+        SeekWorkService service = retrofit.create(SeekWorkService.class);
+        Call<SrvResult<MMachineInfo>> updateAction = service.getMachineInfo(SeekerSoftConstant.DEVICEID);
         LogCat.e("getSynchroBaseData = " + updateAction.request().url().toString());
-        updateAction.enqueue(new Callback<TakeOutResBody>() {
+        updateAction.enqueue(new Callback<SrvResult<MMachineInfo>>() {
             @Override
-            public void onResponse(Call<TakeOutResBody> call, Response<TakeOutResBody> response) {
-                if (response != null && response.body() != null && response.body().status != 201) {
+            public void onResponse(Call<SrvResult<MMachineInfo>> call, Response<SrvResult<MMachineInfo>> response) {
+                if (response != null && response.body() != null && response.body().getStatus() == 1 && response.body().getData() != null
+                        && response.body().getData().isAuthorize()) {
+                    LogCat.e("Status: " + response.body().getStatus());
 
+                    SeekerSoftConstant.MachineNo = response.body().getData().getMachineNo();
+                    tv_num.setText("设备编号：" + response.body().getData().getMachineNo());
+                    tv_name.setText("紧急联系人：" + response.body().getData().getContacts() + "  " + response.body().getData().getNumbers());
+
+                    // 成功授权显示逻辑
+                    promissionDialog.dismiss();
+                    // 成功授权取消加载进度
+                    pb_loadingdata.setVisibility(View.GONE);
+                    btn_try.setVisibility(View.VISIBLE);
                 } else {
-
+                    if (!promissionDialog.isShowing()) {
+                        promissionDialog.show();
+                    }
+                    tv_error.setText("错误：" + response.body().getMsg());
+                    pb_loadingdata.setVisibility(View.GONE);
+                    btn_try.setVisibility(View.VISIBLE);
                 }
-                // 成功授权显示逻辑
-                promissionDialog.dismiss();
-                // 成功授权取消加载进度
-                pb_loadingdata.setVisibility(View.GONE);
-                btn_try.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onFailure(Call<TakeOutResBody> call, Throwable throwable) {
+            public void onFailure(Call<SrvResult<MMachineInfo>> call, Throwable throwable) {
+                if (!promissionDialog.isShowing()) {
+                    promissionDialog.show();
+                }
+
+                if (throwable != null) {
+                    tv_error.setText("错误：" + throwable.getMessage());
+                } else {
+                    tv_error.setText("未知错误，请联系管理员。");
+                }
+
                 pb_loadingdata.setVisibility(View.GONE);
                 btn_try.setVisibility(View.VISIBLE);
             }

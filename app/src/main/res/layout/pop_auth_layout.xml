@@ -18,18 +18,26 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_title"
         android:layout_marginTop="40dp"
-        android:layout_marginBottom="40dp"
         android:gravity="center"
-        android:text="WINON-hkkaliu29tihsekjgb"
         android:textSize="16sp" />
 
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_machine"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:textColor="@color/bg_no"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/btn_try"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_machine"
+        android:layout_below="@id/tv_error"
         android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/shape_corner_trans_try"
@@ -43,6 +51,7 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_machine"
+        android:layout_below="@id/tv_error"
+        android:layout_marginTop="40dp"
         android:layout_marginBottom="20dp" />
 </RelativeLayout>

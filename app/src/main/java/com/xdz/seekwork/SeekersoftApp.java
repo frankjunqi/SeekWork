@@ -13,10 +13,6 @@ import com.xdz.seekwork.util.SeekerSoftConstant;
  */
 
 public class SeekersoftApp extends Application {
-    /**
-     * A flag to show how easily you can switch from standard SQLite to the encrypted SQLCipher.
-     */
-    public static final boolean ENCRYPTED = false;
 
 
     private static SeekersoftApp mSeekersoftApp;
@@ -28,10 +24,8 @@ public class SeekersoftApp extends Application {
         // 初始化bugly
         //CrashReport.initCrashReport(getApplicationContext(), "900004362", true);
 
-        // Database Application Init
-
-        // 初始化设备信息
-        SeekerSoftConstant.DEVICEID = DeviceInfoTool.getDeviceId();
+        // TODO 初始化设备信息
+        // SeekerSoftConstant.DEVICEID = DeviceInfoTool.getDeviceId();
         // 初始化串口设备
         VendingSerialPort.SingleInit();
 

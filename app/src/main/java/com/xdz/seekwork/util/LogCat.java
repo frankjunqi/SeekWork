@@ -1,6 +1,7 @@
 package com.xdz.seekwork.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  */
@@ -12,7 +13,7 @@ public class LogCat {
             if (TextUtils.isEmpty(msg)) {
                 System.out.println("nothing msg...");
             } else {
-                System.out.println(msg);
+                Log.e("Tag,", msg);
             }
         }
     }
