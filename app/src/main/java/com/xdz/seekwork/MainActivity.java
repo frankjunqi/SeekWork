@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void loginValidate(String cardNo) {
+    private void loginValidate(final String cardNo) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
         Call<SrvResult<Boolean>> updateAction = service.loginValidate(SeekerSoftConstant.MachineNo, cardNo);
@@ -174,6 +174,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
                 if (response != null && response.body() != null && response.body().getStatus() == 1 && response.body().getData()) {
                     // TODO 打开管理员页面
+                    Intent intent = new Intent(MainActivity.this, ManageActivity.class);
+                    intent.putExtra("cardNo", cardNo);
+                    startActivity(intent);
                 } else {
                     // 不是管理员卡，不需要做任何操作
                     LogCat.e("提示信息：" + response.body().getMsg());
