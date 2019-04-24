@@ -18,4 +18,10 @@ public class SeekerSoftConstant {
     public static String MachineNo = "";
 
 
+    public static final String ActionType = "ActionType";
+    public static final String Borrow = "Borrow";
+    public static final String Back = "Back";
+    public static final String Take = "Take";
+
+
 }

@@ -32,6 +32,11 @@ import retrofit2.Retrofit;
 
 // 取货
 public class TakeActivity extends AppCompatActivity implements View.OnClickListener {
+
+    public String ActionType = "";
+
+    private TextView tv_take_back;
+
     private MaterialDialog promissionDialog;
     private List<MRoad> list;
     private KeyBordView kbv;
@@ -43,7 +48,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
     // 选择的数量
     private TextView tv_choose_num;
-    private TextView tv_cut, tv_add;
+    private TextView tv_cut, tv_add, tv_back;
 
     private ImageView iv_card;
     private ProgressBar pb_loadingdata;
@@ -62,6 +67,10 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take);
 
+        ActionType = getIntent().getStringExtra(SeekerSoftConstant.ActionType);
+        tv_take_back = findViewById(R.id.tv_take_back);
+        tv_take_back.setOnClickListener(this);
+
         kbv = findViewById(R.id.kbv);
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -76,6 +85,9 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         tv_add = customView.findViewById(R.id.tv_add);
         tv_add.setOnClickListener(this);
 
+        tv_back = customView.findViewById(R.id.tv_back);
+        tv_back.setOnClickListener(this);
+
         iv_card = customView.findViewById(R.id.iv_card);
         pb_loadingdata = customView.findViewById(R.id.pb_loadingdata);
 
@@ -86,60 +98,78 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         kbv.setSureClickListen(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mRoad = null;
+                choostNum = 1;
+                successNum = 0;
 
                 String keyBoradRoad = kbv.getKeyBoradStr();
-                // 是否存在货道
-                boolean isExistRoad = false;
-                // 是否存在库存
-                boolean isExistNum = false;
 
                 for (int i = 0; list != null && i < list.size(); i++) {
                     if (!TextUtils.isEmpty(keyBoradRoad) && keyBoradRoad.equals(list.get(i).getBorderRoad())) {
-                        isExistRoad = true;
-                        if (list.get(i).getQty() > 0) {
-                            isExistNum = true;
-                        }
                         mRoad = list.get(i);
                         break;
                     }
                 }
 
-                // 没有此货道 or 此货道没有库存
-                if (!isExistRoad || !isExistNum) {
-                    // TODO 做提示 没有此货道 or 此货道没有库存
-                    Log.e("tag", (isExistRoad ? "有货道" : "无货道") + (isExistNum ? "有库存" : "无库存"));
-                    mRoad = null;
+                if (mRoad == null) {
+                    // TODO 没有货道提示
+
                 } else {
-                    // TODO 正确逻辑
-                    if (mRoad != null) {
+                    if ("1".equals(mRoad.getCabType()) && mRoad.getQty() == 0 && SeekerSoftConstant.Borrow.equals(ActionType)) {
+                        // 格子柜 & 库存 ＝＝ 0 & 借操作
+                        // 调用查询被谁借走的接口
+                        getLastBorrowName();
+                    } else if ("1".equals(mRoad.getCabType()) && SeekerSoftConstant.Back.equals(ActionType) && mRoad.getQty() > 0) {
+                        // TODO 格子柜 & 库存 > 0 & 还操作  ＝＝> 提示已经归还
+
+                    } else if (!"1".equals(mRoad.getCabType()) && mRoad.getQty() == 0) {
+                        // TODO 螺纹柜 & 库存 == 0  ＝＝> 提示无库存
+
+                    } else {
+                        // 设置dialog中数据
                         tv_qty.setText(String.valueOf(mRoad.getQty()));
                         tv_productname.setText(mRoad.getProductName());
-                    }
-                    // 开去串口读卡器
-                    cardReadSerialPort = new CardReadSerialPort();
-                    cardReadSerialPort.setOnDataReceiveListener(new CardReadSerialPort.OnDataReceiveListener() {
-                        @Override
-                        public void onDataReceiveString(final String IDNUM) {
-                            Log.e("tag", "IDNUM = " + IDNUM);
+                        tv_choose_num.setText(String.valueOf(choostNum));
 
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    cardReadSerialPort.closeReadSerial();
-                                    iv_card.setVisibility(View.GONE);
-                                    pb_loadingdata.setVisibility(View.VISIBLE);
-                                    cardReadSerialPort = null;
-
-                                    // TODO 根据卡号 机器号 请求是否可以取货接口
-
-                                    pickQueryByRFID(IDNUM);
-                                }
-                            });
-
+                        if ("1".equals(mRoad.getCabType())) {
+                            // TODO 格子柜不可点击处理，灰色处理
+                        } else {
+                            // TODO 螺纹柜 可点击 处理
                         }
-                    });
-                    // 授权弹框
-                    promissionDialog.show();
+
+                        // 开去串口读卡器
+                        cardReadSerialPort = new CardReadSerialPort();
+                        cardReadSerialPort.setOnDataReceiveListener(new CardReadSerialPort.OnDataReceiveListener() {
+                            @Override
+                            public void onDataReceiveString(final String IDNUM) {
+                                Log.e("tag", "IDNUM = " + IDNUM);
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        cardReadSerialPort.closeReadSerial();
+                                        iv_card.setVisibility(View.GONE);
+                                        pb_loadingdata.setVisibility(View.VISIBLE);
+                                        cardReadSerialPort = null;
+
+                                        // 有货道 ＋ 有库存 请求接口 判断是否有权限出货
+                                        if ("1".equals(mRoad.getCabType())) {
+                                            // 格子柜
+                                            authBorrowAndBack(IDNUM);
+                                        } else {
+                                            // 螺纹柜
+                                            // TODO 根据卡号 机器号 请求是否可以取货接口
+                                            pickQueryByRFID(IDNUM);
+                                        }
+                                    }
+                                });
+
+                            }
+                        });
+                        // 授权弹框
+                        promissionDialog.show();
+                    }
+
                 }
             }
         });
@@ -151,23 +181,37 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.tv_cut) {
-            if (choostNum == 1) {
-                // TODO 提示最少取1件
-                choostNum = 1;
+            if (mRoad != null && !"1".equals(mRoad.getCabType())) {
+                if (choostNum == 1) {
+                    // TODO 提示最少取1件
+                    choostNum = 1;
 
+                } else {
+                    choostNum = choostNum - 1;
+                }
             } else {
-                choostNum = choostNum - 1;
+                // 借还操作
             }
             tv_choose_num.setText(String.valueOf(choostNum));
         } else if (v.getId() == R.id.tv_add) {
-            if (choostNum == mRoad.getQty()) {
-                // TODO 提示最多只能库存数
-                choostNum = mRoad.getQty();
+            if (mRoad != null && !"1".equals(mRoad.getCabType())) {
+                if (choostNum == mRoad.getQty()) {
+                    // TODO 提示最多只能库存数
+                    choostNum = mRoad.getQty();
 
+                } else {
+                    choostNum = choostNum + 1;
+                }
             } else {
-                choostNum = choostNum + 1;
+                // 借还操作
             }
             tv_choose_num.setText(String.valueOf(choostNum));
+        } else if (v.getId() == R.id.tv_back) {
+            // 弹出框操作中返回取消按钮
+            promissionDialog.dismiss();
+        } else if (v.getId() == R.id.tv_take_back) {
+            // 取货页面关闭
+            TakeActivity.this.finish();
         }
     }
 
@@ -209,15 +253,16 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                 if (response != null && response.body() != null && response.body().getData() != null) {
                     // TODO 成功逻辑
                     if (response.body().getData().isAuthorize()) {
+                        // 硬件编号，用户出货
+                        String realRoad = mRoad.getRealCode();
+
                         // TODO 调用出货串口(统计多次发送出货命令)
                         successNum++;
 
                         // TODO 多次出货后，在出货串口成功返回的中出请求出货成功逻辑接口
                         pickSuccess(cardNo);
 
-                        // TODO 提示出货成功，关闭取货页面，返回道首页
-                        promissionDialog.dismiss();
-                        TakeActivity.this.finish();
+
                     }
                 } else {
                     // TODO 无数据
@@ -258,6 +303,11 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     // TODO 接口逻辑处理失败
                 }
+
+                // TODO 提示出货成功，关闭取货页面，返回道首页
+                promissionDialog.dismiss();
+                TakeActivity.this.finish();
+
             }
 
             @Override
@@ -294,6 +344,10 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     // TODO 接口逻辑处理失败
                 }
+
+                // TODO 提示出货成功，关闭取货页面，返回道首页
+                promissionDialog.dismiss();
+                TakeActivity.this.finish();
             }
 
             @Override
@@ -329,6 +383,10 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     // TODO 接口逻辑处理失败
                 }
+
+                // TODO 提示出货成功，关闭取货页面，返回道首页
+                promissionDialog.dismiss();
+                TakeActivity.this.finish();
             }
 
             @Override
@@ -348,7 +406,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         mRoadAction.enqueue(new Callback<SrvResult<String>>() {
             @Override
             public void onResponse(Call<SrvResult<String>> call, Response<SrvResult<String>> response) {
-
+                // TODO 提示 是谁借走 此货柜的货物
             }
 
             @Override
@@ -359,15 +417,42 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     // 借货 还货 请求
-    private void authBorrowAndBack(String cardNo) {
+    private void authBorrowAndBack(final String cardNo) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
-        Call<SrvResult<Boolean>> mRoadAction = service.authBorrowAndBack(cardNo, SeekerSoftConstant.MachineNo, mRoad.getCabNo(), mRoad.getRoadCode(), 1);
+        final Call<SrvResult<Boolean>> mRoadAction = service.authBorrowAndBack(cardNo, SeekerSoftConstant.MachineNo, mRoad.getCabNo(), mRoad.getRoadCode(), 1);
         LogCat.e("queryRoad = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<Boolean>>() {
             @Override
             public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
+                if (response != null && response.body() != null && response.body().getData()) {
+                    // TODO 操作串口 分 格子柜 与 螺纹柜
 
+                    // 硬件编号，用户出货
+                    String realRoad = mRoad.getRealCode();
+
+                    if (mRoad != null && "1".equals(mRoad.getCabType())) {
+                        // 格子柜
+
+                    }
+                    if (mRoad != null && !"1".equals(mRoad.getCabType())) {
+                        // 螺纹柜
+
+                    }
+
+                    // TODO 判断串口是否出货成功
+
+                    // TODO 提交借还成功接口
+                    if (SeekerSoftConstant.Borrow.equals(ActionType)) {
+                        // 借成功
+                        borrowComplete(cardNo);
+                    } else {
+                        // 还成功
+                        backComplete(cardNo);
+                    }
+
+
+                }
             }
 
             @Override
