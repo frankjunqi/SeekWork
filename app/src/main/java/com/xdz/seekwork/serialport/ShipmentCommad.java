@@ -43,4 +43,14 @@ public class ShipmentCommad {
     public int containerNum = 0x0B;// 货柜编号
     private int proHang = 0x01;// 行号
     private int proLie = 0x02;// 列号
+
+    public boolean isGEZI() {
+        return isGEZI;
+    }
+
+    public void setGEZI(boolean GEZI) {
+        isGEZI = GEZI;
+    }
+
+    private boolean isGEZI = false;
 }

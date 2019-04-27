@@ -26,7 +26,6 @@ import com.xdz.seekwork.view.KeyBordView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -284,7 +283,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                         // 11 45
                         final List<ShipmentCommad> list = new ArrayList<>();
                         for (int i = 0; i < choostNum; i++) {
-                            list.add(new ShipmentCommad(11));
+                            list.add(new ShipmentCommad(45));
                         }
 
                         VendingSerialPort.SingleInit().setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
@@ -473,34 +472,50 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         LogCat.e("authBorrowAndBack = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<Boolean>>() {
             @Override
-            public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
-                if (response != null && response.body() != null && response.body().getData()) {
-                    // 操作串口 分 格子柜
-
+            public void onResponse(Call<SrvResult<Boolean>> call, final Response<SrvResult<Boolean>> response) {
+                // && response.body() != null && response.body().getData()
+                if (response != null) {
+                    // 操作串口格子柜
 
                     // 硬件编号，用户出货
                     int realRoad = mRoad.getRealCode();
+                    ShipmentCommad shipmentCommad = new ShipmentCommad(11);
+                    shipmentCommad.setGEZI(true);
 
                     if (mRoad != null && "1".equals(mRoad.getCabType())) {
                         // 格子柜
-
+                        // TODO 数量不可操作
                     }
-                    if (mRoad != null && !"1".equals(mRoad.getCabType())) {
-                        // 螺纹柜
-
-                    }
-
                     // TODO 判断串口是否出货成功
 
-                    // TODO 提交借还成功接口
-                    if (SeekerSoftConstant.Borrow.equals(ActionType)) {
-                        // 借成功
-                        borrowComplete(cardNo);
-                    } else {
-                        // 还成功
-                        backComplete(cardNo);
-                    }
+                    VendingSerialPort.SingleInit().setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
+                        @Override
+                        public void onDataReceiveString(final String ResultStr) {
+                            // TODO 判断借还成功
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtils.isEmpty(ResultStr)) {
+                                        showTipDialog("借还成功。");
+                                        // 提交借还成功接口
+                                        if (SeekerSoftConstant.Borrow.equals(ActionType)) {
+                                            // 借成功
+                                            borrowComplete(cardNo);
+                                        } else {
+                                            // 还成功
+                                            backComplete(cardNo);
+                                        }
+                                    } else {
+                                        showTipDialog("串口错误提示：");
+                                    }
+                                }
+                            });
 
+                        }
+                    }).commadTakeOut(shipmentCommad);
+
+
+                } else {
 
                 }
             }

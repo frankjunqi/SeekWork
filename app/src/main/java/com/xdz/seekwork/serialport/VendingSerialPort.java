@@ -51,7 +51,12 @@ public class VendingSerialPort {
             sendData[0] = (byte) 0xFF;
             sendData[1] = (byte) 0x0C;
             sendData[2] = (byte) 0x00;
-            sendData[3] = (byte) 0xA5;// A3 A5
+
+            if (shipmentCommad.isGEZI()) {
+                sendData[3] = (byte) 0xA5;// A3 A5
+            } else {
+                sendData[3] = (byte) 0xA3;// A3 A5
+            }
 
             sendData[4] = (byte) shipmentObject.containerNum;
             sendData[5] = (byte) shipmentObject.getProHang();
