@@ -17,6 +17,7 @@ import com.xdz.seekwork.network.api.SeekWorkService;
 import com.xdz.seekwork.network.api.SrvResult;
 import com.xdz.seekwork.network.entity.seekwork.MMachineInfo;
 import com.xdz.seekwork.network.gsonfactory.GsonConverterFactory;
+import com.xdz.seekwork.serialport.CardReadSerialPort;
 import com.xdz.seekwork.util.LogCat;
 import com.xdz.seekwork.util.SeekerSoftConstant;
 
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tv_num, tv_name;
 
     public final static String[] PERMS_WRITE = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_SETTINGS};
+
+    private CardReadSerialPort cardReadSerialPort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         EasyPermissions.requestPermissions(this, "请求权限", 12, PERMS_WRITE);
     }
+
 
     @Override
     public void onClick(View v) {
@@ -190,6 +194,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CardReadSerialPort.SingleInit().setOnDataReceiveListener(new CardReadSerialPort.OnDataReceiveListener() {
+            @Override
+            public void onDataReceiveString(String IDNUM) {
+                loginValidate(IDNUM);
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        CardReadSerialPort.SingleInit().setOnDataReceiveListener(null);
     }
 
     @Override

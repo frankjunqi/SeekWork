@@ -124,7 +124,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_choose"
-        android:src="@drawable/card" />
+        android:src="@drawable/card"
+        android:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/pb_loadingdata"
@@ -133,5 +134,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_choose"
         android:layout_marginTop="60dp"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"
+        android:visibility="invisible" />
 </RelativeLayout>

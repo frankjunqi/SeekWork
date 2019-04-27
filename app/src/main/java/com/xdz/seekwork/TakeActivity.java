@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,11 +18,15 @@ import com.xdz.seekwork.network.entity.seekwork.MPickQueryByRFID;
 import com.xdz.seekwork.network.entity.seekwork.MRoad;
 import com.xdz.seekwork.network.gsonfactory.GsonConverterFactory;
 import com.xdz.seekwork.serialport.CardReadSerialPort;
+import com.xdz.seekwork.serialport.ShipmentCommad;
+import com.xdz.seekwork.serialport.VendingSerialPort;
 import com.xdz.seekwork.util.LogCat;
 import com.xdz.seekwork.util.SeekerSoftConstant;
 import com.xdz.seekwork.view.KeyBordView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,7 +63,12 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
     private int successNum = 0;
 
-    private CardReadSerialPort cardReadSerialPort;
+    private MaterialDialog tipDialog;
+
+    private void showTipDialog(String tips) {
+        tipDialog = new MaterialDialog.Builder(this).content(tips).build();
+        tipDialog.show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +121,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (mRoad == null) {
                     // TODO 没有货道提示
-
+                    showTipDialog("没有货道");
                 } else {
                     if ("1".equals(mRoad.getCabType()) && mRoad.getQty() == 0 && SeekerSoftConstant.Borrow.equals(ActionType)) {
                         // 格子柜 & 库存 ＝＝ 0 & 借操作
@@ -121,44 +129,50 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                         getLastBorrowName();
                     } else if ("1".equals(mRoad.getCabType()) && SeekerSoftConstant.Back.equals(ActionType) && mRoad.getQty() > 0) {
                         // TODO 格子柜 & 库存 > 0 & 还操作  ＝＝> 提示已经归还
-
+                        showTipDialog("已经归还");
                     } else if (!"1".equals(mRoad.getCabType()) && mRoad.getQty() == 0) {
                         // TODO 螺纹柜 & 库存 == 0  ＝＝> 提示无库存
-
+                        showTipDialog("无库存");
                     } else {
                         // 设置dialog中数据
+                        iv_card.setVisibility(View.VISIBLE);
+                        pb_loadingdata.setVisibility(View.INVISIBLE);
+
                         tv_qty.setText(String.valueOf(mRoad.getQty()));
                         tv_productname.setText(mRoad.getProductName());
                         tv_choose_num.setText(String.valueOf(choostNum));
 
                         if ("1".equals(mRoad.getCabType())) {
                             // TODO 格子柜不可点击处理，灰色处理
+
                         } else {
                             // TODO 螺纹柜 可点击 处理
+
                         }
 
                         // 开去串口读卡器
-                        cardReadSerialPort = new CardReadSerialPort();
-                        cardReadSerialPort.setOnDataReceiveListener(new CardReadSerialPort.OnDataReceiveListener() {
+                        CardReadSerialPort.SingleInit().setOnDataReceiveListener(new CardReadSerialPort.OnDataReceiveListener() {
                             @Override
                             public void onDataReceiveString(final String IDNUM) {
-                                Log.e("tag", "IDNUM = " + IDNUM);
 
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        cardReadSerialPort.closeReadSerial();
                                         iv_card.setVisibility(View.GONE);
                                         pb_loadingdata.setVisibility(View.VISIBLE);
-                                        cardReadSerialPort = null;
 
                                         // 有货道 ＋ 有库存 请求接口 判断是否有权限出货
-                                        if ("1".equals(mRoad.getCabType())) {
-                                            // 格子柜
-                                            authBorrowAndBack(IDNUM);
-                                        } else {
-                                            // 螺纹柜
-                                            // TODO 根据卡号 机器号 请求是否可以取货接口
+                                        if (SeekerSoftConstant.Back.equals(ActionType) || SeekerSoftConstant.Borrow.equals(ActionType)) {
+                                            // 格子柜 借 还
+                                            if ("1".equals(mRoad.getCabType())) {
+                                                // 操作 借 还 柜子
+                                                authBorrowAndBack(IDNUM);
+                                            } else {
+                                                showTipDialog("此货道不可进行借还操作");
+                                            }
+                                        } else if (SeekerSoftConstant.Take.equals(ActionType)) {
+                                            // 螺纹柜 取货
+                                            // 根据卡号 机器号 请求是否可以取货接口
                                             pickQueryByRFID(IDNUM);
                                         }
                                     }
@@ -166,6 +180,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
                             }
                         });
+
                         // 授权弹框
                         promissionDialog.show();
                     }
@@ -178,6 +193,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.tv_cut) {
@@ -185,7 +201,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                 if (choostNum == 1) {
                     // TODO 提示最少取1件
                     choostNum = 1;
-
+                    showTipDialog("最少取1件");
                 } else {
                     choostNum = choostNum - 1;
                 }
@@ -198,7 +214,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                 if (choostNum == mRoad.getQty()) {
                     // TODO 提示最多只能库存数
                     choostNum = mRoad.getQty();
-
+                    showTipDialog("最多只能库存数");
                 } else {
                     choostNum = choostNum + 1;
                 }
@@ -224,54 +240,104 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         mRoadAction.enqueue(new Callback<SrvResult<List<MRoad>>>() {
             @Override
             public void onResponse(Call<SrvResult<List<MRoad>>> call, Response<SrvResult<List<MRoad>>> response) {
-                if (response != null && response.body() != null && response.body().getData() != null) {
-                    // TODO 成功逻辑
+                if (response != null && response.body() != null && response.body().getData() != null && response.body().getData().size() > 0) {
+                    // 成功逻辑
                     list = response.body().getData();
                 } else {
-                    // TODO 无数据
+                    // 无数据
+                    showTipDialog("此货柜没有配置货道信息，不可进行任何操作。");
                 }
             }
 
             @Override
             public void onFailure(Call<SrvResult<List<MRoad>>> call, Throwable throwable) {
-                // TODO 异常
+                // 异常
+                showTipDialog("错误提示：网络异常。");
             }
         });
 
     }
 
+    private int flag = 0;
 
     // 刷卡取货
     private void pickQueryByRFID(final String cardNo) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
         Call<SrvResult<MPickQueryByRFID>> mRoadAction = service.pickQueryByRFID(cardNo, SeekerSoftConstant.MachineNo, mRoad.getCabNo(), mRoad.getRoadCode(), choostNum);
-        LogCat.e("queryRoad = " + mRoadAction.request().url().toString());
+        LogCat.e("pickQueryByRFID = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<MPickQueryByRFID>>() {
             @Override
             public void onResponse(Call<SrvResult<MPickQueryByRFID>> call, Response<SrvResult<MPickQueryByRFID>> response) {
+                /*MPickQueryByRFID mPickQueryByRFID = new MPickQueryByRFID();
+                mPickQueryByRFID.setAuthorize(true);
+                response.body().setData(mPickQueryByRFID);*/
                 if (response != null && response.body() != null && response.body().getData() != null) {
-                    // TODO 成功逻辑
+                    // 成功逻辑
                     if (response.body().getData().isAuthorize()) {
                         // 硬件编号，用户出货
-                        String realRoad = mRoad.getRealCode();
+                        int realRoad = mRoad.getRealCode();
 
-                        // TODO 调用出货串口(统计多次发送出货命令)
-                        successNum++;
+                        // 记住出货第几个
+                        flag = 0;
 
-                        // TODO 多次出货后，在出货串口成功返回的中出请求出货成功逻辑接口
-                        pickSuccess(cardNo);
+                        // 11 45
+                        final List<ShipmentCommad> list = new ArrayList<>();
+                        for (int i = 0; i < choostNum; i++) {
+                            list.add(new ShipmentCommad(11));
+                        }
 
+                        VendingSerialPort.SingleInit().setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
+                            @Override
+                            public void onDataReceiveString(final String ResultStr) {
 
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        flag++;
+
+                                        // TODO 判断出货是否成功
+                                        if (!TextUtils.isEmpty(ResultStr)) {
+                                            successNum++;
+                                        }
+                                        // 看下是否还有货要出
+                                        // 调用出货串口(统计多次发送出货命令)
+                                        if (list.size() > flag) {
+                                            VendingSerialPort.SingleInit().commadTakeOut(list.get(flag));
+                                        } else {
+                                            // 根据出货数量 与 用户选择的进行比较：如果 出货成功次数==需求数量 则显示 "全部出货完成";
+                                            // 如果 出货成功次数==0 则显示 "全部出货失败";
+                                            // 如果 出货成功次数>0 && 出货成功次数!= 需求数量 则显示 "部分出货成功";
+                                            String tips = "";
+                                            if (choostNum == successNum) {
+                                                tips = "全部出货完成";
+                                            } else if (successNum == 0) {
+                                                tips = "全部出货失败";
+                                            } else {
+                                                tips = successNum + "个物品出货成功，" + (choostNum - successNum) + "个物品出货失败。";
+                                            }
+                                            showTipDialog(tips);
+
+                                            // 多次出货后，在出货串口成功返回的中出请求出货成功逻辑接口
+                                            pickSuccess(cardNo);
+                                        }
+                                    }
+                                });
+                            }
+                        }).commadTakeOut(list.get(flag));
+                    } else {
+                        showTipDialog("错误提示：此卡无权取货。");
                     }
                 } else {
-                    // TODO 无数据
+                    // 无数据
+                    showTipDialog("错误提示：" + response.body().getMsg());
                 }
             }
 
             @Override
             public void onFailure(Call<SrvResult<MPickQueryByRFID>> call, Throwable throwable) {
-                // TODO 异常
+                // 异常
+                showTipDialog("错误提示：网络异常。");
             }
         });
 
@@ -282,28 +348,10 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
         Call<SrvResult<Boolean>> mRoadAction = service.pickSuccess(cardNo, SeekerSoftConstant.MachineNo, mRoad.getCabNo(), mRoad.getRoadCode(), successNum);
-        LogCat.e("queryRoad = " + mRoadAction.request().url().toString());
+        LogCat.e("pickSuccess = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<Boolean>>() {
             @Override
             public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
-                // TODO 根据出货数量 与 用户选择的进行比较：如果 出货成功次数==需求数量 则显示 "全部出货完成";
-                //如果 出货成功次数==0 则显示 "全部出货失败";
-                //如果 出货成功次数>0 && 出货成功次数!= 需求数量 则显示 "部分出货成功";
-                String tips = "";
-                if (choostNum == successNum) {
-                    tips = "全部出货完成";
-                } else if (successNum == 0) {
-                    tips = "全部出货失败";
-                } else {
-                    tips = "部分出货成功";
-                }
-
-                if (response != null && response.body() != null && response.body().getData()) {
-                    // TODO 接口逻辑处理成功
-                } else {
-                    // TODO 接口逻辑处理失败
-                }
-
                 // TODO 提示出货成功，关闭取货页面，返回道首页
                 promissionDialog.dismiss();
                 TakeActivity.this.finish();
@@ -312,7 +360,9 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onFailure(Call<SrvResult<Boolean>> call, Throwable throwable) {
-
+                // TODO 提示出货成功，关闭取货页面，返回道首页
+                promissionDialog.dismiss();
+                TakeActivity.this.finish();
             }
         });
     }
@@ -327,32 +377,21 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         mRoadAction.enqueue(new Callback<SrvResult<Boolean>>() {
             @Override
             public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
-                // TODO 根据出货数量 与 用户选择的进行比较：如果 出货成功次数==需求数量 则显示 "全部出货完成";
-                //如果 出货成功次数==0 则显示 "全部出货失败";
-                //如果 出货成功次数>0 && 出货成功次数!= 需求数量 则显示 "部分出货成功";
-                String tips = "";
-                if (choostNum == successNum) {
-                    tips = "全部出货完成";
-                } else if (successNum == 0) {
-                    tips = "全部出货失败";
-                } else {
-                    tips = "部分出货成功";
-                }
-
                 if (response != null && response.body() != null && response.body().getData()) {
-                    // TODO 接口逻辑处理成功
+                    // 接口逻辑处理成功
+                    showTipDialog("借货成功。");
                 } else {
-                    // TODO 接口逻辑处理失败
+                    // 接口逻辑处理失败
+                    showTipDialog("借货失败。");
                 }
-
-                // TODO 提示出货成功，关闭取货页面，返回道首页
+                // 提示出货成功，关闭取货页面，返回道首页
                 promissionDialog.dismiss();
                 TakeActivity.this.finish();
             }
 
             @Override
             public void onFailure(Call<SrvResult<Boolean>> call, Throwable throwable) {
-
+                showTipDialog("错误提示：网络异常。");
             }
         });
     }
@@ -391,7 +430,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onFailure(Call<SrvResult<Boolean>> call, Throwable throwable) {
-
+                showTipDialog("错误提示：网络异常。");
             }
         });
     }
@@ -411,7 +450,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onFailure(Call<SrvResult<String>> call, Throwable throwable) {
-
+                showTipDialog("错误提示：网络异常。");
             }
         });
     }
@@ -420,16 +459,27 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     private void authBorrowAndBack(final String cardNo) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
-        final Call<SrvResult<Boolean>> mRoadAction = service.authBorrowAndBack(cardNo, SeekerSoftConstant.MachineNo, mRoad.getCabNo(), mRoad.getRoadCode(), 1);
-        LogCat.e("queryRoad = " + mRoadAction.request().url().toString());
+
+        int BorrowBackType = 0;
+        if (SeekerSoftConstant.Back.equals(ActionType)) {
+            // 还货
+            BorrowBackType = 1;
+        } else {
+            // 借货
+            BorrowBackType = 0;
+        }
+
+        final Call<SrvResult<Boolean>> mRoadAction = service.authBorrowAndBack(cardNo, SeekerSoftConstant.MachineNo, mRoad.getCabNo(), mRoad.getRoadCode(), BorrowBackType);
+        LogCat.e("authBorrowAndBack = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<Boolean>>() {
             @Override
             public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
                 if (response != null && response.body() != null && response.body().getData()) {
-                    // TODO 操作串口 分 格子柜 与 螺纹柜
+                    // 操作串口 分 格子柜
+
 
                     // 硬件编号，用户出货
-                    String realRoad = mRoad.getRealCode();
+                    int realRoad = mRoad.getRealCode();
 
                     if (mRoad != null && "1".equals(mRoad.getCabType())) {
                         // 格子柜
@@ -457,7 +507,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onFailure(Call<SrvResult<Boolean>> call, Throwable throwable) {
-
+                showTipDialog("错误提示：网络异常。");
             }
         });
     }
@@ -465,9 +515,6 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (cardReadSerialPort != null) {
-            cardReadSerialPort.closeReadSerial();
-        }
     }
 
 }

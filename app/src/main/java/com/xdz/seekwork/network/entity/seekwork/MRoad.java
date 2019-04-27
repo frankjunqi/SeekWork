@@ -13,7 +13,7 @@ public class MRoad implements Serializable {
     //货道编号
     private String RoadCode;
     //物理地址
-    private String RealCode;
+    private int RealCode;
     //产品名称
     private String ProductName;
 
@@ -51,11 +51,11 @@ public class MRoad implements Serializable {
         RoadCode = roadCode;
     }
 
-    public String getRealCode() {
+    public int getRealCode() {
         return RealCode;
     }
 
-    public void setRealCode(String realCode) {
+    public void setRealCode(int realCode) {
         RealCode = realCode;
     }
 

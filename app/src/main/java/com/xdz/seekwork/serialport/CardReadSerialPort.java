@@ -18,7 +18,8 @@ public class CardReadSerialPort {
     private String TAG = CardReadSerialPort.class.getSimpleName();
 
     // serial port JNI object
-    private SeekerSoftSerialPort mSerialPort;
+    private static CardReadSerialPort portUtil;
+    private static SeekerSoftSerialPort mSerialPort;
     private OutputStream mOutputStream;
     private InputStream mInputStream;
 
@@ -30,7 +31,7 @@ public class CardReadSerialPort {
 
     // serial port thread interrupt and close serial port:
     // true : close ; false : open
-    private boolean isStop = false;
+    private static boolean isStop = false;
 
     // device & baudrate
     private String devicePath = "/dev/ttyS0";
@@ -55,32 +56,33 @@ public class CardReadSerialPort {
     }
 
 
-    public CardReadSerialPort() {
-        onCreate();
+    public static CardReadSerialPort SingleInit() {
+        // 如果停止监听 或者 第一次启动
+        if (isStop || null == portUtil) {
+            isStop = false;
+            portUtil = new CardReadSerialPort();
+            portUtil.onCreate();
+        }
+        return portUtil;
     }
 
-    /**
-     * 打开 Card Serial
-     */
+
     private void onCreate() {
         try {
-            //  打开 Card Serial
             mSerialPort = new SeekerSoftSerialPort(new File(devicePath), baudrate, 0);
             mOutputStream = mSerialPort.getOutputStream();
             mInputStream = mSerialPort.getInputStream();
+
+            mReadThread = new ReadThread();
+            mReadThread.start();
         } catch (Exception e) {
-            Log.e(TAG, "Init Card Serial Open Port Failed");
+            Log.e(TAG, "Init Serial Port Failed");
             mSerialPort = null;
         }
-        // 开启 串口 读取 线程
-        mReadThread = new ReadThread();
-        mReadThread.start();
     }
 
-    /**
-     * 关闭串口
-     */
-    public void closeReadSerial() {
+
+    public void closeSerialPort() {
         isStop = true;
         if (mReadThread != null) {
             mReadThread.interrupt();
@@ -88,6 +90,7 @@ public class CardReadSerialPort {
         if (mSerialPort != null) {
             mSerialPort.close();
             mSerialPort = null;
+            portUtil = null;
         }
     }
 
@@ -96,7 +99,7 @@ public class CardReadSerialPort {
 
         @Override
         public void run() {
-            String IDNUM = "";
+            byte[] backData = new byte[14];
             while (!isStop && !isInterrupted()) {
                 // 串口开启，做读取数据
                 int size = 1;
@@ -104,15 +107,14 @@ public class CardReadSerialPort {
                     if (mInputStream == null) {
                         return;
                     }
-                    byte[] buffer = new byte[1];
-                    size = mInputStream.read(buffer);
-                    IDNUM = IDNUM + new String(buffer, 0, size);
+                    size = mInputStream.read(backData);
+                    String IDNUM = new String(backData, 0, size);
                     Log.e("test", "idnum = " + IDNUM);
                     // 默认以 "\r\n" 结束读取
-                    if (IDNUM.endsWith("\r\n")) {
+                    if (IDNUM.contains("\r\n")) {
                         if (null != onDataReceiveListener) {
                             onDataReceiveListener.onDataReceiveString(getStringIn(IDNUM));
-                            IDNUM = "";
+                            backData = new byte[14];
                         }
                     }
                 } catch (Exception e) {
