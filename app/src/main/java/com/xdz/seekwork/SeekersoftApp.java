@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.xdz.seekwork.serialport.CardReadSerialPort;
 import com.xdz.seekwork.serialport.VendingSerialPort;
 import com.xdz.seekwork.util.DeviceInfoTool;
 import com.xdz.seekwork.util.SeekerSoftConstant;
@@ -28,6 +29,7 @@ public class SeekersoftApp extends Application {
         // SeekerSoftConstant.DEVICEID = DeviceInfoTool.getDeviceId();
         // 初始化串口设备
         VendingSerialPort.SingleInit();
+        CardReadSerialPort.SingleInit();
 
     }
 

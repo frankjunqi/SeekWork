@@ -10,9 +10,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.xdz.seekwork.R;
-import com.xdz.seekwork.serialport.ShipmentObject;
+import com.xdz.seekwork.serialport.ShipmentCommad;
 import com.xdz.seekwork.serialport.VendingSerialPort;
-import com.xdz.seekwork.util.LogCat;
 
 
 /**
@@ -61,7 +60,7 @@ public class TestNewVendingActivity extends AppCompatActivity implements View.On
                 int row = Integer.parseInt(row_str);
                 tv_showdata.setText(col + " " + row);
 
-                VendingSerialPort.SingleInit().pushCmdOutShipment(new ShipmentObject()).setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
+                VendingSerialPort.SingleInit().setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
                     @Override
                     public void onDataReceiveString(final String ResultStr) {
                         //Log.e("TAG","recevie = "+ResultStr);
@@ -69,12 +68,12 @@ public class TestNewVendingActivity extends AppCompatActivity implements View.On
                             @Override
                             public void run() {
                                 byte[] bytes = ResultStr.getBytes();
-                                VendingSerialPort.SingleInit().pushCmdOutShipment(new ShipmentObject()).commadTakeOut();
+                                VendingSerialPort.SingleInit().commadTakeOut(new ShipmentCommad(12));
 
                             }
                         });
                     }
-                }).commadTakeOut();
+                }).commadTakeOut(new ShipmentCommad(12));
 
                 break;
 
@@ -90,11 +89,11 @@ public class TestNewVendingActivity extends AppCompatActivity implements View.On
                 int row1 = Integer.parseInt(row_str_);
                 tv_showdata.setText(col1 + " " + row1);
 
-                VendingSerialPort.SingleInit().pushCmdOutShipment(new ShipmentObject()).pushCmdOutShipment(new ShipmentObject()).setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
+                VendingSerialPort.SingleInit().setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
                     @Override
                     public void onDataReceiveString(final String ResultStr) {
 
-                        Log.e("TAG","recevie = "+ResultStr);
+                        Log.e("TAG", "recevie = " + ResultStr);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -102,7 +101,7 @@ public class TestNewVendingActivity extends AppCompatActivity implements View.On
                             }
                         });
                     }
-                }).commadTakeOut();
+                }).commadTakeOut(new ShipmentCommad(12));
                 break;
 
         }
