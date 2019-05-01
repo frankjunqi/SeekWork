@@ -44,6 +44,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
+            android:name=".ManageListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
             android:name=".test.TestNewVendingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
