@@ -235,7 +235,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
         Call<SrvResult<List<MRoad>>> mRoadAction = service.queryRoad(SeekerSoftConstant.MachineNo);
-        LogCat.e("queryRoad = " + mRoadAction.request().url().toString());
+        LogCat.e("url = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<List<MRoad>>>() {
             @Override
             public void onResponse(Call<SrvResult<List<MRoad>>> call, Response<SrvResult<List<MRoad>>> response) {
@@ -264,7 +264,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
         Call<SrvResult<MPickQueryByRFID>> mRoadAction = service.pickQueryByRFID(cardNo, SeekerSoftConstant.MachineNo, mRoad.getCabNo(), mRoad.getRoadCode(), choostNum);
-        LogCat.e("pickQueryByRFID = " + mRoadAction.request().url().toString());
+        LogCat.e("url = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<MPickQueryByRFID>>() {
             @Override
             public void onResponse(Call<SrvResult<MPickQueryByRFID>> call, Response<SrvResult<MPickQueryByRFID>> response) {
@@ -347,7 +347,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
         Call<SrvResult<Boolean>> mRoadAction = service.pickSuccess(cardNo, SeekerSoftConstant.MachineNo, mRoad.getCabNo(), mRoad.getRoadCode(), successNum);
-        LogCat.e("pickSuccess = " + mRoadAction.request().url().toString());
+        LogCat.e("url = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<Boolean>>() {
             @Override
             public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
@@ -372,7 +372,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
         Call<SrvResult<Boolean>> mRoadAction = service.borrowComplete(cardNo, SeekerSoftConstant.MachineNo, mRoad.getCabNo(), mRoad.getRoadCode(), successNum);
-        LogCat.e("queryRoad = " + mRoadAction.request().url().toString());
+        LogCat.e("url = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<Boolean>>() {
             @Override
             public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
@@ -400,7 +400,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
         Call<SrvResult<Boolean>> mRoadAction = service.backComplete(cardNo, SeekerSoftConstant.MachineNo, mRoad.getCabNo(), mRoad.getRoadCode(), successNum);
-        LogCat.e("queryRoad = " + mRoadAction.request().url().toString());
+        LogCat.e("url = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<Boolean>>() {
             @Override
             public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
@@ -440,7 +440,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
         Call<SrvResult<String>> mRoadAction = service.getLastBorrowName(SeekerSoftConstant.MachineNo, mRoad.getCabNo(), mRoad.getRoadCode());
-        LogCat.e("queryRoad = " + mRoadAction.request().url().toString());
+        LogCat.e("url = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<String>>() {
             @Override
             public void onResponse(Call<SrvResult<String>> call, Response<SrvResult<String>> response) {
@@ -469,7 +469,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         final Call<SrvResult<Boolean>> mRoadAction = service.authBorrowAndBack(cardNo, SeekerSoftConstant.MachineNo, mRoad.getCabNo(), mRoad.getRoadCode(), BorrowBackType);
-        LogCat.e("authBorrowAndBack = " + mRoadAction.request().url().toString());
+        LogCat.e("url = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<Boolean>>() {
             @Override
             public void onResponse(Call<SrvResult<Boolean>> call, final Response<SrvResult<Boolean>> response) {

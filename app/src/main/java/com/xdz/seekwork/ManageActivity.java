@@ -36,8 +36,10 @@ public class ManageActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add_pro:
-                // TODO 去补货界面
-                startActivity(new Intent(ManageActivity.this, ManageListActivity.class));
+                // 去补货界面
+                Intent intent = new Intent(ManageActivity.this, ManageListActivity.class);
+                intent.putExtra("cardNo", cardNo);
+                startActivity(intent);
                 break;
             case R.id.btn_open_box:
                 // TODO 弹出框选择打开柜子
@@ -45,6 +47,7 @@ public class ManageActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.btn_exit_sys:
                 break;
             case R.id.btn_exit_manager:
+                ManageActivity.this.finish();
                 break;
         }
 

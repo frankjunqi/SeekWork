@@ -19,11 +19,11 @@ public class MNum implements Serializable {
         RoadCode = roadCode;
     }
 
-    public String getQty() {
+    public int getQty() {
         return Qty;
     }
 
-    public void setQty(String qty) {
+    public void setQty(int qty) {
         Qty = qty;
     }
 
@@ -32,5 +32,5 @@ public class MNum implements Serializable {
     //货道编号
     private String RoadCode;
     //用户界面上填写的差异数量
-    private String Qty;
+    private int Qty;
 }

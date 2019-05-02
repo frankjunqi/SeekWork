@@ -1,10 +1,8 @@
 package com.xdz.seekwork.adpter.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,11 +21,9 @@ public class StuView extends RelativeLayout implements ItemView {
     private GradientDrawable gd;
 
     private TextView tv_name;
-    private TextView tv_sex;
-    private TextView tv_school;
-    private TextView tv_class;
-
-    private Button btn_handle;
+    private TextView tv_huodao;
+    private TextView tv_bu_num;
+    private TextView tv_diff_num;
 
 
     public StuView(Context context) {
@@ -51,11 +47,9 @@ public class StuView extends RelativeLayout implements ItemView {
     @Override
     public void prepareItemView() {
         tv_name = findViewById(R.id.tv_name);
-        tv_sex = findViewById(R.id.tv_sex);
-        tv_school = findViewById(R.id.tv_school);
-        tv_class = findViewById(R.id.tv_class);
-        btn_handle = findViewById(R.id.btn_handle);
-
+        tv_huodao = findViewById(R.id.tv_huodao);
+        tv_diff_num = findViewById(R.id.tv_diff_num);
+        tv_bu_num = findViewById(R.id.tv_bu_num);
 
     }
 
@@ -68,7 +62,10 @@ public class StuView extends RelativeLayout implements ItemView {
         }
 
         if (stuItem.mRoad != null) {
+            tv_huodao.setText(String.valueOf(stuItem.mRoad.getRoadCode()));
             tv_name.setText(stuItem.mRoad.getProductName());
+            tv_bu_num.setText(String.valueOf(stuItem.mRoad.getLackNum()));
+            //tv_diff_num.setText(String.valueOf(stuItem.mRoad.getLackNum()));
         }
 
 

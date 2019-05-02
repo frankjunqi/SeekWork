@@ -19,6 +19,8 @@ import com.xdz.seekwork.adpter.model.StuItem;
 import com.xdz.seekwork.network.api.Host;
 import com.xdz.seekwork.network.api.SeekWorkService;
 import com.xdz.seekwork.network.api.SrvResult;
+import com.xdz.seekwork.network.entity.seekwork.MNum;
+import com.xdz.seekwork.network.entity.seekwork.MReplenish;
 import com.xdz.seekwork.network.entity.seekwork.MRoad;
 import com.xdz.seekwork.network.gsonfactory.GsonConverterFactory;
 import com.xdz.seekwork.util.LogCat;
@@ -48,15 +50,29 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
     private List<MRoad> list;
 
     private ArrayList<Item> itemZhuList = new ArrayList<>();
-    private ArrayList<Item> itemAList = new ArrayList<>();
-    private ArrayList<Item> itemBList = new ArrayList<>();
-    private ArrayList<Item> itemCList = new ArrayList<>();
+    private ArrayList<MRoad> zhuList = new ArrayList<>();
 
+    private ArrayList<Item> itemAList = new ArrayList<>();
+    private ArrayList<MRoad> aList = new ArrayList<>();
+
+    private ArrayList<Item> itemBList = new ArrayList<>();
+    private ArrayList<MRoad> bList = new ArrayList<>();
+
+    private ArrayList<Item> itemCList = new ArrayList<>();
+    private ArrayList<MRoad> cList = new ArrayList<>();
+
+    // 0: 主柜 // 1：A // 2：B // 3: C
+    private int currentFlag = 0;
+
+    private String cardNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager_list);
+
+        cardNo = getIntent().getStringExtra("cardNo");
+
         tv_take_back = findViewById(R.id.tv_take_back);
         tv_take_back.setOnClickListener(this);
 
@@ -106,7 +122,7 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
         Call<SrvResult<List<MRoad>>> mRoadAction = service.queryRoad(SeekerSoftConstant.MachineNo);
-        LogCat.e("queryRoad = " + mRoadAction.request().url().toString());
+        LogCat.e("url = " + mRoadAction.request().url().toString());
         mRoadAction.enqueue(new Callback<SrvResult<List<MRoad>>>() {
             @Override
             public void onResponse(Call<SrvResult<List<MRoad>>> call, Response<SrvResult<List<MRoad>>> response) {
@@ -115,19 +131,30 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
                     list = response.body().getData();
 
                     itemZhuList.clear();
+                    zhuList.clear();
+
                     itemAList.clear();
+                    aList.clear();
+
                     itemBList.clear();
+                    bList.clear();
+
                     itemCList.clear();
+                    cList.clear();
 
                     for (int i = 0; i < list.size(); i++) {
                         String cabNo = list.get(i).getCabNo();
                         if ("主柜".equals(cabNo)) {
+                            zhuList.add(list.get(i));
                             itemZhuList.add(new StuItem(list.get(i)));
                         } else if ("A".equals(cabNo)) {
+                            aList.add(list.get(i));
                             itemAList.add(new StuItem(list.get(i)));
                         } else if ("B".equals(cabNo)) {
+                            bList.add(list.get(i));
                             itemBList.add(new StuItem(list.get(i)));
                         } else if ("C".equals(cabNo)) {
+                            cList.add(list.get(i));
                             itemCList.add(new StuItem(list.get(i)));
                         }
                     }
@@ -152,28 +179,101 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_zhugui:
+                currentFlag = 0;
                 itemListAdapter.notifyDataRefresh(itemZhuList);
                 break;
             case R.id.btn_a:
+                currentFlag = 1;
                 itemListAdapter.notifyDataRefresh(itemAList);
                 break;
             case R.id.btn_b:
+                currentFlag = 2;
                 itemListAdapter.notifyDataRefresh(itemBList);
                 break;
             case R.id.btn_c:
+                currentFlag = 3;
                 itemListAdapter.notifyDataRefresh(itemCList);
                 break;
             case R.id.btn_sure:
+                pushReplian();
                 break;
             case R.id.tv_take_back:
                 this.finish();
                 break;
         }
-
     }
+
+    private void pushReplian() {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
+        SeekWorkService service = retrofit.create(SeekWorkService.class);
+
+        MReplenish mReplenish = new MReplenish();
+        mReplenish.setCardNo(cardNo);
+        mReplenish.setMachineCode(SeekerSoftConstant.MachineNo);
+        List<MNum> RodeList = new ArrayList<>();
+
+        if (currentFlag == 0) {
+            // 主柜
+            for (int i = 0; i < zhuList.size(); i++) {
+                MNum mNum = new MNum();
+                mNum.setNo(zhuList.get(i).getNo());
+                mNum.setQty(zhuList.get(i).getQty());
+                mNum.setRoadCode(zhuList.get(i).getRoadCode());
+                RodeList.add(mNum);
+            }
+
+        } else if (currentFlag == 1) {
+            // A
+            for (int i = 0; i < aList.size(); i++) {
+                MNum mNum = new MNum();
+                mNum.setNo(aList.get(i).getNo());
+                mNum.setQty(aList.get(i).getQty());
+                mNum.setRoadCode(aList.get(i).getRoadCode());
+                RodeList.add(mNum);
+            }
+        } else if (currentFlag == 2) {
+            // B
+            for (int i = 0; i < bList.size(); i++) {
+                MNum mNum = new MNum();
+                mNum.setNo(bList.get(i).getNo());
+                mNum.setQty(bList.get(i).getQty());
+                mNum.setRoadCode(bList.get(i).getRoadCode());
+                RodeList.add(mNum);
+            }
+        } else if (currentFlag == 3) {
+            // C
+            for (int i = 0; i < cList.size(); i++) {
+                MNum mNum = new MNum();
+                mNum.setNo(cList.get(i).getNo());
+                mNum.setQty(cList.get(i).getQty());
+                mNum.setRoadCode(cList.get(i).getRoadCode());
+                RodeList.add(mNum);
+            }
+        }
+
+        mReplenish.setRodeList(RodeList);
+
+        Call<SrvResult<Boolean>> mRoadAction = service.replenish(mReplenish);
+        LogCat.e("url = " + mRoadAction.request().url().toString());
+        mRoadAction.enqueue(new Callback<SrvResult<Boolean>>() {
+            @Override
+            public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
+                if (response != null && response.body() != null && response.body().getData() != null && response.body().getData()) {
+                    showTipDialog("补货成功");
+                } else {
+                    showTipDialog("补货失败");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SrvResult<Boolean>> call, Throwable throwable) {
+                showTipDialog("网络异常");
+            }
+        });
+    }
+
 }
