@@ -67,6 +67,10 @@ public class StuView extends RelativeLayout implements ItemView {
             return;
         }
 
+        if (stuItem.mRoad != null) {
+            tv_name.setText(stuItem.mRoad.getProductName());
+        }
+
 
     }
 }

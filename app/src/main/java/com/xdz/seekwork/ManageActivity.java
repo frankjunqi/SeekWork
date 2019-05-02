@@ -1,5 +1,6 @@
 package com.xdz.seekwork;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -36,6 +37,7 @@ public class ManageActivity extends AppCompatActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.btn_add_pro:
                 // TODO 去补货界面
+                startActivity(new Intent(ManageActivity.this, ManageListActivity.class));
                 break;
             case R.id.btn_open_box:
                 // TODO 弹出框选择打开柜子
