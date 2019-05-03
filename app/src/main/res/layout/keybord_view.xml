@@ -27,8 +27,8 @@
             android:maxLines="1"
             android:minHeight="46dp"
             android:padding="20dp"
-            android:text="请输入货道:"
-            android:textSize="@dimen/keyborad_value" />
+            android:text="请输入货道："
+            android:textSize="38sp" />
     </LinearLayout>
 
 
