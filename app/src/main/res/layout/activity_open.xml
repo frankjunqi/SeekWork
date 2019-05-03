@@ -14,17 +14,18 @@
         <ImageView
             android:id="@+id/iv_title_bar"
             android:layout_width="match_parent"
-            android:layout_height="69dp"
-            android:src="@drawable/title_bar" />
+            android:layout_height="100dp"
+            android:background="@drawable/title_bar" />
 
     </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/ll_actionbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="96dp"
         android:layout_below="@id/ll_top"
-        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -32,25 +33,34 @@
         <TextView
             android:id="@+id/tv_take_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="6dp"
             android:drawableLeft="@drawable/angle_left"
-            android:text="返回"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:text="取消"
             android:textColor="@android:color/black"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:textSize="32sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="6dp"
-            android:text=""
+            android:text="取货确认"
             android:textColor="@android:color/black"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:textSize="32sp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:textColor="@android:color/black"
+            android:textSize="32sp" />
 
     </RelativeLayout>
 
@@ -67,8 +77,8 @@
             android:id="@+id/ll_one"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_marginBottom="16dp"
             android:layout_weight="1"
             android:orientation="horizontal"
@@ -85,7 +95,7 @@
                 android:background="@drawable/selector_btn_take"
                 android:text="打开主柜"
                 android:textColor="@android:color/white"
-                android:textSize="22sp" />
+                android:textSize="30sp" />
 
             <Button
                 android:id="@+id/btn_a"
@@ -98,7 +108,7 @@
                 android:background="@drawable/selector_btn_take"
                 android:text="打开A柜"
                 android:textColor="@android:color/white"
-                android:textSize="22sp" />
+                android:textSize="30sp" />
         </LinearLayout>
 
 
@@ -107,8 +117,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/ll_one"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_marginBottom="16dp"
             android:layout_weight="1"
             android:orientation="horizontal"
@@ -125,7 +135,7 @@
                 android:background="@drawable/selector_btn_take"
                 android:text="打开B柜"
                 android:textColor="@android:color/white"
-                android:textSize="22sp" />
+                android:textSize="30sp" />
 
             <Button
                 android:id="@+id/btn_c"
@@ -138,21 +148,10 @@
                 android:background="@drawable/selector_btn_take"
                 android:text="打开C柜"
                 android:textColor="@android:color/white"
-                android:textSize="22sp" />
+                android:textSize="30sp" />
         </LinearLayout>
 
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_cancle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="4dp"
-        android:layout_weight="1"
-        android:background="@drawable/selector_btn_exit"
-        android:text="取消"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/keybord_text_size" />
 </RelativeLayout>

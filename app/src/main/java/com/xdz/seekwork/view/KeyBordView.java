@@ -94,57 +94,84 @@ public class KeyBordView extends RelativeLayout implements View.OnClickListener 
         switch (v.getId()) {
             case R.id.btn_a:
                 enterBuild.append(keys[0]);
+                setEnable();
                 break;
             case R.id.btn_b:
                 enterBuild.append(keys[1]);
+                setEnable();
                 break;
             case R.id.btn_c:
                 enterBuild.append(keys[2]);
+                setEnable();
                 break;
             case R.id.btn_0:
                 enterBuild.append(keys[3]);
+                setEnable();
                 break;
             case R.id.btn_1:
                 enterBuild.append(keys[4]);
+                setEnable();
                 break;
             case R.id.btn_2:
                 enterBuild.append(keys[5]);
+                setEnable();
                 break;
             case R.id.btn_3:
                 enterBuild.append(keys[6]);
+                setEnable();
                 break;
             case R.id.btn_4:
                 enterBuild.append(keys[7]);
+                setEnable();
                 break;
             case R.id.btn_5:
                 enterBuild.append(keys[8]);
+                setEnable();
                 break;
             case R.id.btn_6:
                 enterBuild.append(keys[9]);
+                setEnable();
                 break;
             case R.id.btn_7:
                 enterBuild.append(keys[10]);
+                setEnable();
                 break;
             case R.id.btn_8:
                 enterBuild.append(keys[11]);
+                setEnable();
                 break;
             case R.id.btn_9:
                 enterBuild.append(keys[12]);
+                setEnable();
                 break;
-
             case R.id.btn_clear:
                 if (enterBuild.toString().length() > 0) {
                     enterBuild.delete(0, enterBuild.toString().length());
                 }
+                setEnable();
                 break;
-
             case R.id.btn_back:
                 if (enterBuild.toString().length() > 0) {
                     enterBuild.delete(enterBuild.toString().length() - 1, enterBuild.toString().length());
                 }
+                setEnable();
                 break;
         }
         tv_showstr.setText(enterBuild.toString());
+    }
+
+
+    private void setEnable() {
+        String str = getKeyBoradStr();
+        if (str.contains("A") || str.contains("B") || str.contains("C")) {
+            btn_a.setEnabled(false);
+            btn_b.setEnabled(false);
+            btn_c.setEnabled(false);
+        } else {
+            btn_a.setEnabled(true);
+            btn_b.setEnabled(true);
+            btn_c.setEnabled(true);
+        }
     }
 
     public void setSureClickListen(OnClickListener onClickListener) {

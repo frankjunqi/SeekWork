@@ -5,42 +5,42 @@
 
     <TextView
         android:id="@+id/tv_huodao"
-        android:layout_width="60dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:background="@drawable/shape_manager_bg"
+        android:background="@drawable/shape_manager_blue_bg"
         android:gravity="left|center_vertical"
-        android:minHeight="48dp"
-        android:paddingLeft="4dp"
+        android:minHeight="68dp"
+        android:paddingLeft="10dp"
         android:text="11"
         android:textColor="@color/title"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/tv_diff_num"
-        android:layout_width="40dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:background="@drawable/shape_manager_bg"
         android:gravity="left|center_vertical"
-        android:minHeight="48dp"
-        android:paddingLeft="4dp"
+        android:minHeight="68dp"
+        android:paddingLeft="10dp"
         android:text="0"
         android:textColor="@color/sub_title"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/tv_bu_num"
-        android:layout_width="60dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/tv_diff_num"
         android:background="@drawable/shape_manager_bg"
         android:gravity="left|center_vertical"
-        android:minHeight="48dp"
-        android:paddingLeft="4dp"
+        android:minHeight="68dp"
+        android:paddingLeft="10dp"
         android:text="15"
         android:textColor="@color/sub_title"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/tv_name"
@@ -52,12 +52,12 @@
         android:ellipsize="end"
         android:gravity="left|center_vertical"
         android:lines="1"
-        android:minHeight="48dp"
-        android:paddingLeft="4dp"
+        android:minHeight="68dp"
+        android:paddingLeft="10dp"
         android:paddingRight="4dp"
         android:text="110110眼镜"
         android:textColor="@color/title"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
 
 </com.xdz.seekwork.adpter.view.StuView>

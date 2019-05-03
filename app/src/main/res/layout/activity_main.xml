@@ -14,15 +14,15 @@
         <ImageView
             android:id="@+id/iv_title_bar"
             android:layout_width="match_parent"
-            android:layout_height="69dp"
-            android:src="@drawable/title_bar" />
+            android:layout_height="100dp"
+            android:background="@drawable/title_bar" />
 
         <ImageView
             android:id="@+id/iv_info"
             android:layout_width="match_parent"
             android:layout_height="238dp"
             android:layout_below="@id/iv_title_bar"
-            android:src="@drawable/instruction" />
+            android:background="@drawable/instruction" />
     </LinearLayout>
 
 
@@ -38,14 +38,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="16dp" />
+            android:layout_marginLeft="16dp"
+            android:text="设备编号：Test002"
+            android:textSize="21sp" />
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="16dp" />
+            android:layout_marginRight="16dp"
+            android:text="紧急联系人：孔建华 13003030330"
+            android:textSize="21sp" />
 
     </RelativeLayout>
 
@@ -70,7 +74,7 @@
             android:background="@drawable/selector_btn_take"
             android:text="取货"
             android:textColor="@android:color/white"
-            android:textSize="22sp" />
+            android:textSize="36sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -94,7 +98,7 @@
                 android:background="@drawable/selector_btn_borrow"
                 android:text="借货"
                 android:textColor="@android:color/white"
-                android:textSize="22sp" />
+                android:textSize="36sp" />
 
             <Button
                 android:id="@+id/btn_back"
@@ -107,7 +111,7 @@
                 android:background="@drawable/selector_btn_back"
                 android:text="还货"
                 android:textColor="@android:color/white"
-                android:textSize="22sp" />
+                android:textSize="36sp" />
         </LinearLayout>
     </LinearLayout>
 

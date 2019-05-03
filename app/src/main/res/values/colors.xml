@@ -10,12 +10,23 @@
     <color name="textcolor">#FF0d8fd9</color>
     <color name="darker_gray">#FFaaaaaa</color>
 
-    <color name="uikit_dark_transparent_blue">#E4E0E0</color>
-    <color name="uikit_dark_transparent_blue_dark">#CBC9C9</color>
+    <color name="darker_manager_gray">#dcdbdb</color>
 
-    <color name="uikit_blue">#CECBCB</color>
+    <color name="manager_blue_gray">#cbe8f9</color>
+
+    <color name="darker_green">#2e6c09</color>
+    <color name="darker_more_green">#214909</color>
+    <color name="little_green">#ebefe8</color>
+
+    <color name="pop_origin">#d28609</color>
+
+    <color name="uikit_dark_transparent_blue">#efeded</color>
+    <color name="uikit_dark_transparent_blue_dark">#e2e1e1</color>
+
+    <color name="uikit_blue">#e6e4e4</color>
 
     <color name="title">#CC080606</color>
+    <color name="un_title">#ccb4b1b1</color>
     <color name="sub_title">#CC383636</color>
 
     <color name="bg_sure">#4A90E2</color>

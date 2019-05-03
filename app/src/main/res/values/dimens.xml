@@ -15,7 +15,7 @@
     <dimen name="manager_padding_left_right">50dp</dimen>
     <dimen name="manager_abc_size">30sp</dimen>
 
-    <dimen name="keybord_text_size">42sp</dimen>
+    <dimen name="keybord_text_size">36sp</dimen>
     <dimen name="big_text_size">58sp</dimen>
 
     <dimen name="mainpage_small_text_size">30sp</dimen>
@@ -40,7 +40,7 @@
     <dimen name="result_page">50sp</dimen>
 
     <dimen name="keyborad_title">50sp</dimen>
-    <dimen name="keyborad_value">50sp</dimen>
+    <dimen name="keyborad_value">42sp</dimen>
 
     <dimen name="btn_min_height">42dp</dimen>
 

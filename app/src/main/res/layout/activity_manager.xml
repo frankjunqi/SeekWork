@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:id="@+id/ll_top"
         android:layout_width="match_parent"
@@ -14,11 +13,10 @@
         <ImageView
             android:id="@+id/iv_title_bar"
             android:layout_width="match_parent"
-            android:layout_height="69dp"
-            android:src="@drawable/title_bar" />
+            android:layout_height="100dp"
+            android:background="@drawable/title_bar" />
 
     </LinearLayout>
-
 
 
     <LinearLayout
@@ -26,7 +24,9 @@
         android:layout_height="match_parent"
         android:layout_above="@id/rl_bottom"
         android:layout_below="@id/ll_top"
-        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
         android:orientation="vertical"
         android:weightSum="3">
 
@@ -34,9 +34,6 @@
             android:id="@+id/ll_one"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -46,26 +43,24 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_below="@id/iv_title_bar"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_margin="12dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_borrow"
                 android:text="货道补货"
                 android:textColor="@android:color/white"
-                android:textSize="22sp" />
+                android:textSize="30sp" />
 
             <Button
                 android:id="@+id/btn_open_box"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_below="@id/iv_title_bar"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_margin="12dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_back"
                 android:text="打开所有格子柜"
                 android:textColor="@android:color/white"
-                android:textSize="22sp" />
+                android:textSize="30sp" />
         </LinearLayout>
 
 
@@ -74,9 +69,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/ll_one"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -86,26 +78,24 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_below="@id/iv_title_bar"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_margin="12dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_exit"
                 android:text="退出系统"
                 android:textColor="@android:color/white"
-                android:textSize="22sp" />
+                android:textSize="30sp" />
 
             <Button
                 android:id="@+id/btn_exit_manager"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_below="@id/iv_title_bar"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_margin="12dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take"
                 android:text="退出管理"
                 android:textColor="@android:color/white"
-                android:textSize="22sp" />
+                android:textSize="30sp" />
         </LinearLayout>
     </LinearLayout>
 

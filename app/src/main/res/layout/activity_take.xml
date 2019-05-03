@@ -7,15 +7,16 @@
     <ImageView
         android:id="@+id/iv_info"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:src="@drawable/title_bar" />
+        android:layout_height="100dp"
+        android:background="@drawable/title_bar" />
 
     <RelativeLayout
         android:id="@+id/ll_actionbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="96dp"
         android:layout_below="@id/iv_info"
-        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -23,36 +24,36 @@
         <TextView
             android:id="@+id/tv_take_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="6dp"
+            android:layout_marginLeft="16dp"
             android:drawableLeft="@drawable/angle_left"
-            android:text="返回"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:text="取消"
             android:textColor="@android:color/black"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:textSize="32sp" />
 
         <TextView
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="6dp"
-            android:text="取货"
             android:textColor="@android:color/black"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:textSize="32sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
             android:text="50s"
             android:textColor="@android:color/black"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:textSize="32sp" />
 
     </RelativeLayout>
 
@@ -60,7 +61,9 @@
         android:id="@+id/kbv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ll_actionbar" />
+        android:layout_below="@id/ll_actionbar"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" />
 
 
 </RelativeLayout>

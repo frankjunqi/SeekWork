@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.xdz.seekwork.network.api.Host;
@@ -26,7 +27,8 @@ import retrofit2.Retrofit;
 public class OpenSerialActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private Button btn_zhu, btn_a, btn_b, btn_c, btn_cancle;
+    private Button btn_zhu, btn_a, btn_b, btn_c;
+    private TextView tv_take_back;
 
     private String cardNo;
     private MaterialDialog tipDialog;
@@ -42,9 +44,11 @@ public class OpenSerialActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manager);
+        setContentView(R.layout.activity_open);
         cardNo = getIntent().getStringExtra("cardNo");
 
+        tv_take_back = findViewById(R.id.tv_take_back);
+        tv_take_back.setOnClickListener(this);
         btn_zhu = findViewById(R.id.btn_zhu);
         btn_zhu.setOnClickListener(this);
         btn_a = findViewById(R.id.btn_a);
@@ -53,8 +57,6 @@ public class OpenSerialActivity extends AppCompatActivity implements View.OnClic
         btn_b.setOnClickListener(this);
         btn_c = findViewById(R.id.btn_c);
         btn_c.setOnClickListener(this);
-        btn_cancle = findViewById(R.id.btn_cancle);
-        btn_cancle.setOnClickListener(this);
 
         getProList();
 
@@ -111,8 +113,6 @@ public class OpenSerialActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_zhu:
-
-
                 break;
             case R.id.btn_a:
                 break;
@@ -120,8 +120,10 @@ public class OpenSerialActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.btn_c:
                 break;
-            case R.id.btn_cancle:
+            case R.id.tv_take_back:
+                OpenSerialActivity.this.finish();
                 break;
+
         }
 
     }

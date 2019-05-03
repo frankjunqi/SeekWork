@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class MRoad implements Serializable {
 
+    // 1:格子 2: 弹簧
     private String CabType;
 
     //柜子NO (提交的时候必传)
