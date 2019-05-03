@@ -68,12 +68,14 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     private int successNum = 0;
 
     private TextView tv_tips;
+    private ImageView iv_tip_error;
     private MaterialDialog tipDialog;
 
     private CardReadSerialPort.OnDataReceiveListener onDataReceiveListener;
 
     private void showTipDialog(String tips) {
         tv_tips.setText(tips);
+        iv_tip_error.setBackgroundResource(R.drawable.icon_report_fill);
         if (tipDialog != null && !tipDialog.isShowing()) {
             tipDialog.show();
         }
@@ -88,6 +90,14 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                 promissionDialog.dismiss();
             }
         }
+
+        // TODO 成功出货用绿色icon 失败用红色icon
+        if (closePage) {
+            iv_tip_error.setBackgroundResource(R.drawable.check_circle_fill);
+        } else {
+            iv_tip_error.setBackgroundResource(R.drawable.icon_report_fill);
+        }
+
         tv_tips.setText(tips);
         if (tipDialog != null && !tipDialog.isShowing()) {
             tipDialog.show();
@@ -153,6 +163,9 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         // dialog tip
         View customViewTip = inflater.inflate(R.layout.pop_tips_layout, null);
         tv_tips = customViewTip.findViewById(R.id.tv_tips);
+
+        iv_tip_error = customViewTip.findViewById(R.id.iv_tip_error);
+
         tipDialog = new MaterialDialog.Builder(this).customView(customViewTip, false).build();
 
         WindowManager.LayoutParams wl = tipDialog.getWindow().getAttributes();
