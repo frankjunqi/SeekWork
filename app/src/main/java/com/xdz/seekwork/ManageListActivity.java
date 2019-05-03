@@ -1,11 +1,17 @@
 package com.xdz.seekwork;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,7 +52,6 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
     private ListView listView;
     private ItemListAdapter itemListAdapter;
 
-    private MaterialDialog tipDialog;
     private List<MRoad> list;
 
     private ArrayList<Item> itemZhuList = new ArrayList<>();
@@ -65,6 +70,12 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
     private int currentFlag = 0;
 
     private String cardNo;
+
+    private MaterialDialog materialDialog;
+
+    private MaterialDialog tipViewDialog;
+    private ImageView iv_tip_error;
+    private TextView tv_tips;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,11 +122,39 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
         // 触发自动刷新
         refreshLayout.autoRefresh();
 
+        materialDialog = new MaterialDialog.Builder(this)
+                .title("补货中")
+                .content("请等待...")
+                .progress(true, 0)
+                .cancelable(false)
+                .build();
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
+        int widthPixels = outMetrics.widthPixels;
+        int heightPixels = outMetrics.heightPixels;
+
+        View customViewTip = inflater.inflate(R.layout.pop_success_layout, null);
+        tv_tips = customViewTip.findViewById(R.id.tv_tips);
+        iv_tip_error = customViewTip.findViewById(R.id.iv_tip_error);
+        tipViewDialog = new MaterialDialog.Builder(this).customView(customViewTip, false).build();
+
+        WindowManager.LayoutParams wl = tipViewDialog.getWindow().getAttributes();
+        wl.width = widthPixels / 5 * 4;
+        wl.height = heightPixels / 2;
+        tipViewDialog.getWindow().setAttributes(wl);
+
+        tipViewDialog.setCancelable(false);
+
     }
 
     private void showTipDialog(String tips) {
-        tipDialog = new MaterialDialog.Builder(this).content(tips).build();
-        tipDialog.show();
+        tv_tips.setText(tips);
+        if (tipViewDialog != null && !tipViewDialog.isShowing()) {
+            tipViewDialog.show();
+        }
+        new DownTimer().start();
     }
 
     private void getProList() {
@@ -166,14 +205,14 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
                     refreshLayout.finishLoadMoreWithNoMoreData();
                 } else {
                     // 无数据
-                    showTipDialog("此货柜没有配置货道信息，不可进行任何操作。");
+                    showTipDialog("提示：此货柜没有配置货道信息，不可进行任何操作。");
                 }
             }
 
             @Override
             public void onFailure(Call<SrvResult<List<MRoad>>> call, Throwable throwable) {
                 // 异常
-                showTipDialog("错误提示：网络异常。");
+                showTipDialog("提示：网络异常。");
             }
         });
 
@@ -208,6 +247,8 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void pushReplian() {
+        materialDialog.show();
+
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
 
@@ -262,18 +303,43 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
         mRoadAction.enqueue(new Callback<SrvResult<Boolean>>() {
             @Override
             public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
+                materialDialog.dismiss();
                 if (response != null && response.body() != null && response.body().getData() != null && response.body().getData()) {
-                    showTipDialog("补货成功");
+                    iv_tip_error.setBackgroundResource(R.drawable.success);
+                    showTipDialog("提示：补货成功。");
                 } else {
-                    showTipDialog("补货失败");
+                    iv_tip_error.setBackgroundResource(R.drawable.icon_report_fill);
+                    showTipDialog("提示：补货失败。");
                 }
             }
 
             @Override
             public void onFailure(Call<SrvResult<Boolean>> call, Throwable throwable) {
-                showTipDialog("网络异常");
+                materialDialog.dismiss();
+                iv_tip_error.setBackgroundResource(R.drawable.icon_report_fill);
+                showTipDialog("提示：网络异常。");
             }
         });
+    }
+
+    class DownTimer extends CountDownTimer {
+
+
+        public DownTimer() {
+            super(3000, 1000);
+        }
+
+        @Override
+        public void onTick(long millusUntilFinished) {
+        }
+
+        @Override
+        public void onFinish() {
+            if (tipViewDialog != null && tipViewDialog.isShowing()) {
+                tipViewDialog.dismiss();
+            }
+        }
+
     }
 
 }
