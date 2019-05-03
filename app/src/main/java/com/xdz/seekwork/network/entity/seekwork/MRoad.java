@@ -99,7 +99,7 @@ public class MRoad implements Serializable {
     public void setDis(boolean dis) {
         IsDis = dis;
     }
-
+    //用户界面上填写的差异数量
     private int Qty;
     //补货数
     private int LackNum;
@@ -112,5 +112,16 @@ public class MRoad implements Serializable {
         }
         return getCabNo() + getRoadCode();
     }
+
+    public int getChaLackNum() {
+        return chaLackNum;
+    }
+
+    public void setChaLackNum(int chaLackNum) {
+        this.chaLackNum = chaLackNum;
+    }
+
+    // 差异补货的数量
+    private int chaLackNum;
 
 }

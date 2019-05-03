@@ -288,7 +288,7 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
             for (int i = 0; i < zhuList.size(); i++) {
                 MNum mNum = new MNum();
                 mNum.setNo(zhuList.get(i).getNo());
-                mNum.setQty(zhuList.get(i).getQty());
+                mNum.setQty(zhuList.get(i).getChaLackNum());
                 mNum.setRoadCode(zhuList.get(i).getRoadCode());
                 RodeList.add(mNum);
             }
@@ -298,7 +298,7 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
             for (int i = 0; i < aList.size(); i++) {
                 MNum mNum = new MNum();
                 mNum.setNo(aList.get(i).getNo());
-                mNum.setQty(aList.get(i).getQty());
+                mNum.setQty(aList.get(i).getChaLackNum());
                 mNum.setRoadCode(aList.get(i).getRoadCode());
                 RodeList.add(mNum);
             }
@@ -307,7 +307,7 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
             for (int i = 0; i < bList.size(); i++) {
                 MNum mNum = new MNum();
                 mNum.setNo(bList.get(i).getNo());
-                mNum.setQty(bList.get(i).getQty());
+                mNum.setQty(bList.get(i).getChaLackNum());
                 mNum.setRoadCode(bList.get(i).getRoadCode());
                 RodeList.add(mNum);
             }
@@ -316,7 +316,7 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
             for (int i = 0; i < cList.size(); i++) {
                 MNum mNum = new MNum();
                 mNum.setNo(cList.get(i).getNo());
-                mNum.setQty(cList.get(i).getQty());
+                mNum.setQty(cList.get(i).getChaLackNum());
                 mNum.setRoadCode(cList.get(i).getRoadCode());
                 RodeList.add(mNum);
             }

@@ -16,24 +16,62 @@
         android:textColor="@color/title"
         android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/tv_diff_num"
-        android:layout_width="160dp"
+    <RelativeLayout
+        android:id="@+id/ll_right"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:background="@drawable/shape_manager_bg"
-        android:gravity="left|center_vertical"
-        android:minHeight="68dp"
-        android:paddingLeft="10dp"
-        android:text="0"
-        android:textColor="@color/sub_title"
-        android:textSize="20sp" />
+        android:background="@drawable/shape_manager_bg">
+
+
+        <TextView
+            android:id="@+id/tv_add"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/cicle_corner_trans_green"
+            android:gravity="center"
+            android:text="+"
+            android:textColor="@color/title"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/tv_cut"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_add"
+            android:background="@drawable/cicle_corner_trans_green"
+            android:gravity="center"
+            android:text="一"
+            android:textColor="@color/title"
+            android:textSize="30sp" />
+
+
+        <TextView
+            android:id="@+id/tv_diff_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/tv_cut"
+            android:gravity="left|center_vertical"
+            android:minHeight="68dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@color/sub_title"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
 
     <TextView
         android:id="@+id/tv_bu_num"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/tv_diff_num"
+        android:layout_toLeftOf="@id/ll_right"
         android:background="@drawable/shape_manager_bg"
         android:gravity="left|center_vertical"
         android:minHeight="68dp"
