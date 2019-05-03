@@ -1,9 +1,16 @@
 package com.xdz.seekwork;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -12,6 +19,8 @@ import com.xdz.seekwork.network.api.SeekWorkService;
 import com.xdz.seekwork.network.api.SrvResult;
 import com.xdz.seekwork.network.entity.seekwork.MRoad;
 import com.xdz.seekwork.network.gsonfactory.GsonConverterFactory;
+import com.xdz.seekwork.serialport.ShipmentCommad;
+import com.xdz.seekwork.serialport.VendingSerialPort;
 import com.xdz.seekwork.util.LogCat;
 import com.xdz.seekwork.util.SeekerSoftConstant;
 
@@ -31,14 +40,16 @@ public class OpenSerialActivity extends AppCompatActivity implements View.OnClic
     private TextView tv_take_back;
 
     private String cardNo;
-    private MaterialDialog tipDialog;
+    private MaterialDialog tipViewDialog;
+
+    private TextView tv_tips;
+    private ImageView iv_tip_error;
+    private ImageView iv_close;
+    private ScrollView sv;
 
     private ArrayList<MRoad> zhuList = new ArrayList<>();
-
     private ArrayList<MRoad> aList = new ArrayList<>();
-
     private ArrayList<MRoad> bList = new ArrayList<>();
-
     private ArrayList<MRoad> cList = new ArrayList<>();
 
     @Override
@@ -60,11 +71,49 @@ public class OpenSerialActivity extends AppCompatActivity implements View.OnClic
 
         getProList();
 
+        initTipDialog();
+
+    }
+
+    private void initTipDialog() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
+        int widthPixels = outMetrics.widthPixels;
+        int heightPixels = outMetrics.heightPixels;
+
+        View customViewTip = inflater.inflate(R.layout.pop_open_serial_layout, null);
+        tv_tips = customViewTip.findViewById(R.id.tv_tips);
+
+        sv = customViewTip.findViewById(R.id.sv);
+
+        iv_tip_error = customViewTip.findViewById(R.id.iv_tip_error);
+        iv_close = customViewTip.findViewById(R.id.iv_close);
+        tipViewDialog = new MaterialDialog.Builder(this).customView(customViewTip, false).build();
+
+        iv_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (tipViewDialog != null && tipViewDialog.isShowing()) {
+                    tipViewDialog.dismiss();
+                }
+            }
+        });
+
+        WindowManager.LayoutParams wl = tipViewDialog.getWindow().getAttributes();
+        wl.width = widthPixels / 5 * 4;
+        wl.height = heightPixels / 4 * 3;
+        tipViewDialog.getWindow().setAttributes(wl);
+
+        tipViewDialog.setCancelable(false);
     }
 
     private void showTipDialog(String tips) {
-        tipDialog = new MaterialDialog.Builder(this).content(tips).build();
-        tipDialog.show();
+        tv_tips.setText(tips);
+        sv.fullScroll(ScrollView.FOCUS_DOWN);
+        if (tipViewDialog != null && !tipViewDialog.isShowing()) {
+            tipViewDialog.show();
+        }
     }
 
     private void getProList() {
@@ -113,12 +162,16 @@ public class OpenSerialActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_zhu:
+                open(0);
                 break;
             case R.id.btn_a:
+                open(1);
                 break;
             case R.id.btn_b:
+                open(2);
                 break;
             case R.id.btn_c:
+                open(3);
                 break;
             case R.id.tv_take_back:
                 OpenSerialActivity.this.finish();
@@ -127,4 +180,93 @@ public class OpenSerialActivity extends AppCompatActivity implements View.OnClic
         }
 
     }
+
+
+    private int flag = 0;
+    private StringBuffer sb = new StringBuffer();
+
+    private void open(final int chooseFlag) {
+        showTipDialog("");
+        iv_close.setVisibility(View.INVISIBLE);
+        flag = 0;
+        sb = new StringBuffer("");
+
+        final ArrayList<ShipmentCommad> shipmentCommads = new ArrayList<>();
+
+        if (chooseFlag == 0) {
+            for (int i = 0; i < zhuList.size(); i++) {
+                ShipmentCommad shipmentCommad = new ShipmentCommad(zhuList.get(i).getRealCode());
+                shipmentCommads.add(shipmentCommad);
+            }
+        } else if (chooseFlag == 1) {
+            for (int i = 0; i < aList.size(); i++) {
+                ShipmentCommad shipmentCommad = new ShipmentCommad(aList.get(i).getRealCode());
+                shipmentCommads.add(shipmentCommad);
+                shipmentCommad.setGEZI(true);
+            }
+        } else if (chooseFlag == 2) {
+            for (int i = 0; i < bList.size(); i++) {
+                ShipmentCommad shipmentCommad = new ShipmentCommad(bList.get(i).getRealCode());
+                shipmentCommads.add(shipmentCommad);
+                shipmentCommad.setGEZI(true);
+            }
+        } else if (chooseFlag == 3) {
+            for (int i = 0; i < cList.size(); i++) {
+                ShipmentCommad shipmentCommad = new ShipmentCommad(cList.get(i).getRealCode());
+                shipmentCommads.add(shipmentCommad);
+                shipmentCommad.setGEZI(true);
+            }
+        }
+
+
+        VendingSerialPort.SingleInit().setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
+            @Override
+            public void onDataReceiveString(final String ResultStr) {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        MRoad mRoad = null;
+                        if (chooseFlag == 0) {
+                            mRoad = zhuList.get(flag);
+                        } else if (chooseFlag == 1) {
+                            mRoad = aList.get(flag);
+                        } else if (chooseFlag == 2) {
+                            mRoad = bList.get(flag);
+                        } else if (chooseFlag == 3) {
+                            mRoad = cList.get(flag);
+                        }
+
+                        // TODO 串口操作成功
+                        if (!TextUtils.isEmpty(ResultStr)) {
+                            // 成功
+                            sb.append("货道号: " + mRoad.getCabNo() + mRoad.getRoadCode() + ",产品名称: " + mRoad.getProductName() + "。\n");
+                            sb.append("测试成功；\n");
+                        } else {
+                            // 失败
+                            sb.append("货道号: " + mRoad.getCabNo() + mRoad.getRoadCode() + ",产品名称: " + mRoad.getProductName() + "。\n");
+                            sb.append("测试失败；\n");
+                        }
+
+                        // 标记+1
+                        flag++;
+
+                        showTipDialog(sb.toString());
+
+                        // 判断是否继续下一个串口打开
+                        if (shipmentCommads.size() > flag) {
+                            VendingSerialPort.SingleInit().commadTakeOut(shipmentCommads.get(flag));
+                        } else {
+                            // 所有的都打开了的操作
+                            iv_close.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+
+
+            }
+        }).commadTakeOut(shipmentCommads.get(flag));
+    }
+
 }
