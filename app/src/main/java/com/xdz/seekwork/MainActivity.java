@@ -109,10 +109,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(MainActivity.this, TakeActivity.class);
             intent.putExtra(SeekerSoftConstant.ActionType, SeekerSoftConstant.Back);
             startActivity(intent);
-        } else if (v.getId() == R.id.tv_num) {
-            Intent intent = new Intent(MainActivity.this, ManageActivity.class);
-            startActivity(intent);
-
         }
     }
 
@@ -135,9 +131,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // 成功授权取消加载进度
                     pb_loadingdata.setVisibility(View.GONE);
                     btn_try.setVisibility(View.VISIBLE);
-
-                    // TODO 检查是否是管理员
-                    loginValidate("1234r43234rdc");
 
                 } else {
                     if (!promissionDialog.isShowing()) {
@@ -178,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(Call<SrvResult<Boolean>> call, Response<SrvResult<Boolean>> response) {
                 if (response != null && response.body() != null && response.body().getStatus() == 1 && response.body().getData()) {
-                    // TODO 打开管理员页面
+                    // 打开管理员页面
                     Intent intent = new Intent(MainActivity.this, ManageActivity.class);
                     intent.putExtra("cardNo", cardNo);
                     startActivity(intent);

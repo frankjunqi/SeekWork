@@ -42,7 +42,7 @@ public class ManageActivity extends AppCompatActivity implements View.OnClickLis
                 startActivity(intent);
                 break;
             case R.id.btn_open_box:
-                // TODO 弹出框选择打开柜子
+                // 弹出框选择打开柜子
                 Intent intent2 = new Intent(ManageActivity.this, OpenSerialActivity.class);
                 intent2.putExtra("cardNo", cardNo);
                 startActivity(intent2);

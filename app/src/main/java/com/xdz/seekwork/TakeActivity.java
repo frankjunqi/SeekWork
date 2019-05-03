@@ -227,7 +227,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 if (mRoad == null) {
-                    // TODO 没有货道提示
+                    // 没有货道提示
                     showTipDialog("提示：当前货道暂未启用。");
                 } else {
                     if ("1".equals(mRoad.getCabType()) && mRoad.getQty() == 0 && SeekerSoftConstant.Borrow.equals(ActionType)) {
