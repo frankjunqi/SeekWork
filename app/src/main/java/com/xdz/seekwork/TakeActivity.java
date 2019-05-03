@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -57,7 +58,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tv_cut, tv_add, tv_back;
 
     private ImageView iv_card;
-    private ProgressBar pb_loadingdata;
+    private LinearLayout ll_progress;
 
     private MRoad mRoad = null;
 
@@ -81,6 +82,12 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showTipDialog(String tips, boolean closePage) {
+        if (closePage) {
+            // 关闭 取货dilog
+            if (promissionDialog != null && promissionDialog.isShowing()) {
+                promissionDialog.dismiss();
+            }
+        }
         tv_tips.setText(tips);
         if (tipDialog != null && !tipDialog.isShowing()) {
             tipDialog.show();
@@ -125,7 +132,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         tv_back.setOnClickListener(this);
 
         iv_card = customView.findViewById(R.id.iv_card);
-        pb_loadingdata = customView.findViewById(R.id.pb_loadingdata);
+        ll_progress = customView.findViewById(R.id.ll_progress);
 
         DisplayMetrics outMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
@@ -166,7 +173,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
                         // 初始化界面
                         iv_card.setVisibility(View.GONE);
-                        pb_loadingdata.setVisibility(View.VISIBLE);
+                        ll_progress.setVisibility(View.VISIBLE);
 
                         // 有货道 ＋ 有库存 请求接口 判断是否有权限出货
                         if (SeekerSoftConstant.Back.equals(ActionType) || SeekerSoftConstant.Borrow.equals(ActionType)) {
@@ -237,7 +244,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                     } else {
                         // 设置dialog中数据
                         iv_card.setVisibility(View.VISIBLE);
-                        pb_loadingdata.setVisibility(View.INVISIBLE);
+                        ll_progress.setVisibility(View.INVISIBLE);
 
                         tv_qty.setText(String.valueOf(mRoad.getQty()));
                         tv_productname.setText(mRoad.getProductName());
@@ -618,17 +625,9 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void onFinish() {
-            if (closePage) {
-                // 关闭 取货dilog
-                if (promissionDialog != null && promissionDialog.isShowing()) {
-                    promissionDialog.dismiss();
-                }
-            }
-
             if (tipDialog != null && tipDialog.isShowing()) {
                 tipDialog.dismiss();
             }
-
             if (closePage) {
                 // 关闭当前activity页面
                 TakeActivity.this.finish();
