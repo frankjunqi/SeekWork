@@ -77,6 +77,9 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
     private ImageView iv_tip_error;
     private TextView tv_tips;
 
+
+    private ArrayList<Button> btnList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +98,11 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
         btn_b.setOnClickListener(this);
         btn_c = findViewById(R.id.btn_c);
         btn_c.setOnClickListener(this);
+
+        btnList.add(btn_zhugui);
+        btnList.add(btn_a);
+        btnList.add(btn_b);
+        btnList.add(btn_c);
 
         btn_sure = findViewById(R.id.btn_sure);
         btn_sure.setOnClickListener(this);
@@ -169,6 +177,8 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
                     // 成功逻辑
                     list = response.body().getData();
 
+                    currentFlag = 0;
+
                     itemZhuList.clear();
                     zhuList.clear();
 
@@ -198,6 +208,8 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
                         }
                     }
 
+                    changeBtn(currentFlag);
+
                     itemListAdapter.notifyDataRefresh(itemZhuList);
                     // 成功刷新
                     refreshLayout.finishRefresh(0, true);
@@ -224,18 +236,22 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
             case R.id.btn_zhugui:
                 currentFlag = 0;
                 itemListAdapter.notifyDataRefresh(itemZhuList);
+                changeBtn(currentFlag);
                 break;
             case R.id.btn_a:
                 currentFlag = 1;
                 itemListAdapter.notifyDataRefresh(itemAList);
+                changeBtn(currentFlag);
                 break;
             case R.id.btn_b:
                 currentFlag = 2;
                 itemListAdapter.notifyDataRefresh(itemBList);
+                changeBtn(currentFlag);
                 break;
             case R.id.btn_c:
                 currentFlag = 3;
                 itemListAdapter.notifyDataRefresh(itemCList);
+                changeBtn(currentFlag);
                 break;
             case R.id.btn_sure:
                 pushReplian();
@@ -243,6 +259,16 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
             case R.id.tv_take_back:
                 this.finish();
                 break;
+        }
+    }
+
+    private void changeBtn(int flag) {
+        for (int i = 0; i < btnList.size(); i++) {
+            if (i == flag) {
+                btnList.get(i).setBackground(getResources().getDrawable(R.drawable.selector_btn_borrow));
+            } else {
+                btnList.get(i).setBackground(getResources().getDrawable(R.drawable.selector_btn_take));
+            }
         }
     }
 
@@ -338,6 +364,10 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
             if (tipViewDialog != null && tipViewDialog.isShowing()) {
                 tipViewDialog.dismiss();
             }
+            // 刷新
+            refreshLayout.setNoMoreData(false);
+            getProList();
+            refreshLayout.autoRefresh();
         }
 
     }
