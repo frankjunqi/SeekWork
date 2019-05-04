@@ -23,9 +23,11 @@ import com.xdz.seekwork.network.entity.seekwork.MRoad;
 import com.xdz.seekwork.network.gsonfactory.GsonConverterFactory;
 import com.xdz.seekwork.serialport.CardReadSerialPort;
 import com.xdz.seekwork.serialport.ShipmentCommad;
+import com.xdz.seekwork.serialport.ShipmentResult;
 import com.xdz.seekwork.serialport.VendingSerialPort;
 import com.xdz.seekwork.util.LogCat;
 import com.xdz.seekwork.util.SeekerSoftConstant;
+import com.xdz.seekwork.util.SerialResultUtil;
 import com.xdz.seekwork.view.KeyBordView;
 
 import java.util.ArrayList;
@@ -83,7 +85,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         new DownTimer().start();
     }
 
-    private void showTipDialog(String tips, boolean closePage) {
+    private void showTipDialog(String tips, boolean closePage, boolean isSuccess) {
         if (closePage) {
             // 关闭 取货dilog
             if (promissionDialog != null && promissionDialog.isShowing()) {
@@ -91,8 +93,8 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        // TODO 成功出货用绿色icon 失败用红色icon
-        if (closePage) {
+        // 成功出货用绿色icon 失败用红色icon
+        if (isSuccess) {
             iv_tip_error.setBackgroundResource(R.drawable.check_circle_fill);
         } else {
             iv_tip_error.setBackgroundResource(R.drawable.icon_report_fill);
@@ -351,7 +353,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                 if (response != null && response.body() != null && response.body().getData() != null && response.body().getData().size() > 0) {
                     // 成功逻辑
                     list = response.body().getData();
-                    // TODO 可以让输入货道可点击
+                    // 可以让输入货道可点击
                 }
             }
 
@@ -387,13 +389,13 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                         final List<ShipmentCommad> list = new ArrayList<>();
                         if ("1".equals(mRoad.getCabType())) {
                             // 格子(去除测试代码)
-                            ShipmentCommad shipmentCommad = new ShipmentCommad(11);
+                            ShipmentCommad shipmentCommad = new ShipmentCommad(realRoad);
                             shipmentCommad.setGEZI(true);
                             list.add(shipmentCommad);
                         } else {
-                            // TODO 螺纹 (去除测试代码)
+                            // 螺纹 (去除测试代码)
                             for (int i = 0; i < choostNum; i++) {
-                                list.add(new ShipmentCommad(45));
+                                list.add(new ShipmentCommad(realRoad));
                             }
                         }
 
@@ -409,17 +411,10 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                                         flag++;
 
                                         // 判断出货是否成功（格子 and 螺纹）
-                                        if ("1".equals(mRoad.getCabType())) {
-                                            // TODO 格子串口返回数据 （成功）（失败）
-
-                                        } else {
-                                            // TODO 螺纹串口返回数据 （成功）（失败）
-                                        }
-
-                                        if (!TextUtils.isEmpty(ResultStr)) {
+                                        ShipmentResult shipmentResult = SerialResultUtil.handleResult(ResultStr);
+                                        if (shipmentResult.isSuccess()) {
                                             successNum++;
                                         }
-
 
                                         // 看下是否还有货要出
                                         // 调用出货串口(统计多次发送出货命令)
@@ -437,40 +432,44 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                                                 // 格子
                                                 if (successNum == 1) {
                                                     tips = "提示：柜门打开成功。";
+                                                    showTipDialog(tips, true, true);
                                                     pickSuccess(cardNo);
                                                 } else {
                                                     tips = "提示：柜门打开失败。";
+                                                    showTipDialog(tips, true, false);
                                                 }
                                             } else {
                                                 // 螺纹
                                                 if (choostNum == successNum) {
                                                     tips = "提示：全部出货完成。";
+                                                    showTipDialog(tips, true, true);
                                                 } else if (successNum == 0) {
                                                     tips = "提示：全部出货失败。";
+                                                    showTipDialog(tips, true, false);
                                                 } else {
                                                     tips = "提示：" + successNum + "个物品出货成功，" + (choostNum - successNum) + "个物品出货失败。";
+                                                    showTipDialog(tips, true, false);
                                                 }
                                                 pickSuccess(cardNo);
                                             }
-                                            showTipDialog(tips, true);
                                         }
                                     }
                                 });
                             }
                         }).commadTakeOut(list.get(flag));
                     } else {
-                        showTipDialog("提示：此卡无权取货。", true);
+                        showTipDialog("提示：此卡无权取货。", true, false);
                     }
                 } else {
                     // 无数据
-                    showTipDialog("提示：" + response.body().getMsg() + "。", true);
+                    showTipDialog("提示：" + response.body().getMsg() + "。", true, false);
                 }
             }
 
             @Override
             public void onFailure(Call<SrvResult<MPickQueryByRFID>> call, Throwable throwable) {
                 // 异常
-                showTipDialog("提示：网络异常。", true);
+                showTipDialog("提示：网络异常。", true, false);
             }
         });
 
@@ -569,8 +568,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                 if (response != null && response.body() != null && response.body().getData()) {
                     // 操作格子柜 ，硬件编号，用户出货
                     int realRoad = mRoad.getRealCode();
-                    // TODO 测试数据删除
-                    ShipmentCommad shipmentCommad = new ShipmentCommad(11);
+                    final ShipmentCommad shipmentCommad = new ShipmentCommad(realRoad);
                     shipmentCommad.setGEZI(true);
 
                     VendingSerialPort.SingleInit().setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
@@ -582,28 +580,30 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                                     // 格子柜，不处理出货结果。
                                     VendingSerialPort.SingleInit().setOnDataReceiveListener(null);
 
-                                    // TODO 判断串口是否出货成功 返回数据校验，提示串口失败原因。
-                                    if (!TextUtils.isEmpty(ResultStr)) {
+                                    ShipmentResult shipmentResult = SerialResultUtil.handleResult(ResultStr);
+                                    // 判断串口是否出货成功 返回数据校验，提示串口失败原因。
+                                    if (shipmentResult.isSuccess()) {
                                         // 提交借还成功接口
                                         if (SeekerSoftConstant.Borrow.equals(ActionType)) {
-                                            showTipDialog("提示：借货成功。", true);
+                                            showTipDialog("提示：借货成功。", true, true);
                                             // 借成功
                                             borrowComplete(cardNo);
                                         } else {
-                                            showTipDialog("提示：还货成功。", true);
+                                            showTipDialog("提示：还货成功。", true, true);
                                             // 还成功
                                             backComplete(cardNo);
                                         }
                                     } else {
-                                        showTipDialog("提示：串口操作失败。", true);
+                                        showTipDialog(shipmentResult.getResultMsg(), true, false);
                                     }
+
                                 }
                             });
 
                         }
                     }).commadTakeOut(shipmentCommad);
                 } else {
-                    showTipDialog("提示：此卡无权取货。", true);
+                    showTipDialog("提示：此卡无权取货。", true, false);
                 }
             }
 

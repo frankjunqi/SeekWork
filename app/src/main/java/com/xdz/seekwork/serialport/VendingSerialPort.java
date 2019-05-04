@@ -45,32 +45,39 @@ public class VendingSerialPort {
         ShipmentCommad shipmentObject = shipmentCommad;
 
         if (shipmentObject != null) {
-            // 起始码 字节码 地址码 功能码 排序 Yn行 Xn列 转数 卸货时间S CRC低 CRC高 停止码
-            byte[] sendData = new byte[12];
-
-            sendData[0] = (byte) 0xFF;
-            sendData[1] = (byte) 0x0C;
-            sendData[2] = (byte) 0x00;
-
-            if (shipmentCommad.isGEZI()) {
-                sendData[3] = (byte) 0xA5;// A3 A5
+            if (!shipmentCommad.isGEZI()) {
+                // 螺纹
+                // 起始码 字节码 地址码 功能码 排序 Yn行 Xn列 转数 卸货时间S CRC低 CRC高 停止码
+                byte[] sendData = new byte[12];
+                sendData[0] = (byte) 0xFF;
+                sendData[1] = (byte) 0x0C;
+                sendData[2] = (byte) 0x00;
+                sendData[3] = (byte) 0xA3;// A3
+                sendData[4] = (byte) shipmentObject.containerNum;
+                sendData[5] = (byte) shipmentObject.getProHang();
+                sendData[6] = (byte) shipmentObject.getProLie();
+                sendData[7] = 0x01;
+                sendData[8] = 0;
+                sendData[9] = 0;
+                sendData[10] = 0;
+                sendData[11] = (byte) 0xFE;
+                // 此处需要重新根据出货成功标识进行判断是否成功出货的回调
+                sendBuffer(crcA3(sendData));
             } else {
-                sendData[3] = (byte) 0xA3;// A3 A5
+                // 格子柜门
+                byte[] sendData = new byte[10];
+                sendData[0] = (byte) 0xFF;
+                sendData[1] = (byte) 0x0A;
+                sendData[2] = (byte) 0x00;
+                sendData[3] = (byte) 0xA2;
+                sendData[4] = (byte) shipmentObject.containerNum;
+                sendData[5] = (byte) shipmentObject.getProHang();
+                sendData[6] = (byte) shipmentObject.getProLie();
+                sendData[7] = 0;
+                sendData[8] = 0;
+                sendData[9] = (byte) 0xFE;
+                sendBuffer(crcA2(sendData));
             }
-
-            sendData[4] = (byte) shipmentObject.containerNum;
-            sendData[5] = (byte) shipmentObject.getProHang();
-            sendData[6] = (byte) shipmentObject.getProLie();
-
-            sendData[7] = 0x01;
-            sendData[8] = 0;
-
-            sendData[9] = 0;
-            sendData[10] = 0;
-            sendData[11] = (byte) 0xFE;
-
-            // 此处需要重新根据出货成功标识进行判断是否成功出货的回调
-            sendBuffer(crc(sendData));
         } else {
             return;
         }
@@ -95,17 +102,21 @@ public class VendingSerialPort {
     }
 
     // FF0C00A30B01010103AAB7FE
-    private byte[] crc(byte[] data) {
-
+    private byte[] crcA3(byte[] data) {
         int wcrc = CRC16(data, 9);
-
         int up = wcrc >> 8;
         int low = wcrc & 0x00ff;
-
-
         data[9] = (byte) low;
         data[10] = (byte) up;
+        return data;
+    }
 
+    private byte[] crcA2(byte[] data) {
+        int wcrc = CRC16(data, 7);
+        int up = wcrc >> 8;
+        int low = wcrc & 0x00ff;
+        data[7] = (byte) low;
+        data[8] = (byte) up;
         return data;
     }
 
@@ -158,7 +169,7 @@ public class VendingSerialPort {
                     }
                     size = mInputStream.read(backData);
                     String hexStr = bytesToHexString(backData);
-                    Log.e("TAG", "bytetostr=" + hexStr + ",size=" + size);
+                    Log.e("TAG", "byte to str= " + hexStr + ",size=" + size);
                     // 默认以 "0xFE" 结束读取
                     if (hexStr.contains("FE")) {
                         if (null != onDataReceiveListener) {

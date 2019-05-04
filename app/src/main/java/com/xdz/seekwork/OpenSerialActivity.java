@@ -3,7 +3,6 @@ package com.xdz.seekwork;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +19,11 @@ import com.xdz.seekwork.network.api.SrvResult;
 import com.xdz.seekwork.network.entity.seekwork.MRoad;
 import com.xdz.seekwork.network.gsonfactory.GsonConverterFactory;
 import com.xdz.seekwork.serialport.ShipmentCommad;
+import com.xdz.seekwork.serialport.ShipmentResult;
 import com.xdz.seekwork.serialport.VendingSerialPort;
 import com.xdz.seekwork.util.LogCat;
 import com.xdz.seekwork.util.SeekerSoftConstant;
+import com.xdz.seekwork.util.SerialResultUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -196,25 +197,26 @@ public class OpenSerialActivity extends AppCompatActivity implements View.OnClic
         if (chooseFlag == 0) {
             for (int i = 0; i < zhuList.size(); i++) {
                 ShipmentCommad shipmentCommad = new ShipmentCommad(zhuList.get(i).getRealCode());
+                shipmentCommad.setGEZI(false);
                 shipmentCommads.add(shipmentCommad);
             }
         } else if (chooseFlag == 1) {
             for (int i = 0; i < aList.size(); i++) {
                 ShipmentCommad shipmentCommad = new ShipmentCommad(aList.get(i).getRealCode());
-                shipmentCommads.add(shipmentCommad);
                 shipmentCommad.setGEZI(true);
+                shipmentCommads.add(shipmentCommad);
             }
         } else if (chooseFlag == 2) {
             for (int i = 0; i < bList.size(); i++) {
                 ShipmentCommad shipmentCommad = new ShipmentCommad(bList.get(i).getRealCode());
-                shipmentCommads.add(shipmentCommad);
                 shipmentCommad.setGEZI(true);
+                shipmentCommads.add(shipmentCommad);
             }
         } else if (chooseFlag == 3) {
             for (int i = 0; i < cList.size(); i++) {
                 ShipmentCommad shipmentCommad = new ShipmentCommad(cList.get(i).getRealCode());
-                shipmentCommads.add(shipmentCommad);
                 shipmentCommad.setGEZI(true);
+                shipmentCommads.add(shipmentCommad);
             }
         }
 
@@ -238,16 +240,10 @@ public class OpenSerialActivity extends AppCompatActivity implements View.OnClic
                             mRoad = cList.get(flag);
                         }
 
-                        // TODO 串口操作成功
-                        if (!TextUtils.isEmpty(ResultStr)) {
-                            // 成功
-                            sb.append("货道号: " + mRoad.getCabNo() + mRoad.getRoadCode() + ",产品名称: " + mRoad.getProductName() + "。\n");
-                            sb.append("测试成功；\n");
-                        } else {
-                            // 失败
-                            sb.append("货道号: " + mRoad.getCabNo() + mRoad.getRoadCode() + ",产品名称: " + mRoad.getProductName() + "。\n");
-                            sb.append("测试失败；\n");
-                        }
+                        // 串口操作成功
+                        ShipmentResult shipmentResult = SerialResultUtil.handleResult(ResultStr);
+                        sb.append("货道号: " + mRoad.getCabNo() + mRoad.getRoadCode() + ",产品名称: " + mRoad.getProductName() + "。\n");
+                        sb.append(shipmentResult.getResultMsg() + "\n\n");
 
                         // 标记+1
                         flag++;
