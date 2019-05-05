@@ -73,6 +73,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
+            android:drawableTop="@drawable/icon_take"
             android:background="@drawable/selector_btn_take"
             android:text="取货"
             android:textColor="@android:color/white"
