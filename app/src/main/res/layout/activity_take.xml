@@ -6,7 +6,7 @@
     <LinearLayout
         android:id="@+id/ll_top"
         android:layout_width="match_parent"
-        android:layout_height="380dp"
+        android:layout_height="460dp"
         android:background="@drawable/title_bar_bg"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
@@ -15,17 +15,17 @@
             android:id="@+id/iv_title_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="50dp"
             android:src="@drawable/logo_next" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="46dp"
+            android:layout_marginTop="70dp"
             android:text="西始工业超市在线智能仓库"
             android:textColor="@color/colorWhite"
-            android:textSize="36sp" />
+            android:textSize="38sp" />
 
     </LinearLayout>
 
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="44dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="198dp"
         android:layout_marginRight="44dp"
         android:background="@drawable/shape_corner_white_bg"
         android:elevation="16dp">

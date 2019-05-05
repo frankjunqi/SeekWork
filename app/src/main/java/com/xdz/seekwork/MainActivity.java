@@ -64,16 +64,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         Drawable drawable_take = getResources().getDrawable(R.drawable.icon_take); //获取图片
-        drawable_take.setBounds(0, 0, 160, 160);  //设置图片参数
+        drawable_take.setBounds(0, 0, 140, 140);  //设置图片参数
         btn_take.setCompoundDrawables(null, drawable_take, null, null);
 
 
         Drawable drawable_back = getResources().getDrawable(R.drawable.icon_back_); //获取图片
-        drawable_back.setBounds(0, 0, 160, 160);  //设置图片参数
+        drawable_back.setBounds(0, 0, 140, 140);  //设置图片参数
         btn_back.setCompoundDrawables(null, drawable_back, null, null);
 
         Drawable drawable_borrow = getResources().getDrawable(R.drawable.icon_borrow); //获取图片
-        drawable_borrow.setBounds(0, 0, 160, 160);  //设置图片参数
+        drawable_borrow.setBounds(0, 0, 140, 140);  //设置图片参数
         btn_borrow.setCompoundDrawables(null, drawable_borrow, null, null);
 
         tv_num = findViewById(R.id.tv_num);
