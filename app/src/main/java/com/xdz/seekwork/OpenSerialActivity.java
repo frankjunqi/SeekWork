@@ -102,7 +102,7 @@ public class OpenSerialActivity extends AppCompatActivity implements View.OnClic
         });
 
         WindowManager.LayoutParams wl = tipViewDialog.getWindow().getAttributes();
-        wl.width = widthPixels / 5 * 4;
+        wl.width = widthPixels - 88;
         wl.height = heightPixels / 4 * 3;
         tipViewDialog.getWindow().setAttributes(wl);
 
