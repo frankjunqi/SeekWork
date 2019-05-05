@@ -1,8 +1,11 @@
 package com.xdz.seekwork;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private CardReadSerialPort cardReadSerialPort;
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +61,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_borrow.setOnClickListener(this);
         btn_back = findViewById(R.id.btn_back);
         btn_back.setOnClickListener(this);
+
+
+        Drawable drawable_take = getResources().getDrawable(R.drawable.icon_take); //获取图片
+        drawable_take.setBounds(0, 0, 160, 160);  //设置图片参数
+        btn_take.setCompoundDrawables(null, drawable_take, null, null);
+
+
+        Drawable drawable_back = getResources().getDrawable(R.drawable.icon_back_); //获取图片
+        drawable_back.setBounds(0, 0, 160, 160);  //设置图片参数
+        btn_back.setCompoundDrawables(null, drawable_back, null, null);
+
+        Drawable drawable_borrow = getResources().getDrawable(R.drawable.icon_borrow); //获取图片
+        drawable_borrow.setBounds(0, 0, 160, 160);  //设置图片参数
+        btn_borrow.setCompoundDrawables(null, drawable_borrow, null, null);
 
         tv_num = findViewById(R.id.tv_num);
         tv_name = findViewById(R.id.tv_name);

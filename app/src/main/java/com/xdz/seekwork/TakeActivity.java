@@ -155,8 +155,8 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         promissionDialog = new MaterialDialog.Builder(this).customView(customView, false).build();
 
         WindowManager.LayoutParams wlp = promissionDialog.getWindow().getAttributes();
-        wlp.width = widthPixels - 100;
-        wlp.height = heightPixels / 5 * 4;
+        wlp.width = widthPixels - 88;
+        wlp.height = heightPixels / 4 * 3;
         promissionDialog.getWindow().setAttributes(wlp);
 
         promissionDialog.setCancelable(false);

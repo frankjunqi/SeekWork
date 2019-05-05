@@ -3,67 +3,92 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <ImageView
-        android:id="@+id/iv_info"
+    <LinearLayout
+        android:id="@+id/ll_top"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@drawable/title_bar" />
-
-    <RelativeLayout
-        android:id="@+id/ll_actionbar"
-        android:layout_width="match_parent"
-        android:layout_height="96dp"
-        android:layout_below="@id/iv_info"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:gravity="center_vertical"
+        android:layout_height="380dp"
+        android:background="@drawable/title_bar_bg"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-
-        <TextView
-            android:id="@+id/tv_take_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="16dp"
-            android:drawableLeft="@drawable/angle_left"
-            android:drawablePadding="4dp"
-            android:gravity="center"
-            android:text="取消"
-            android:textColor="@android:color/black"
-            android:textSize="32sp" />
-
-        <TextView
-            android:id="@+id/tv_title"
+        <ImageView
+            android:id="@+id/iv_title_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="6dp"
-            android:textColor="@android:color/black"
-            android:textSize="32sp" />
+            android:layout_marginTop="20dp"
+            android:src="@drawable/logo_next" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="16dp"
-            android:text="50s"
-            android:textColor="@android:color/black"
-            android:textSize="32sp" />
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="46dp"
+            android:text="西始工业超市在线智能仓库"
+            android:textColor="@color/colorWhite"
+            android:textSize="36sp" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
-    <com.xdz.seekwork.view.KeyBordView
-        android:id="@+id/kbv"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ll_actionbar"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp" />
+        android:layout_marginLeft="44dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginRight="44dp"
+        android:background="@drawable/shape_corner_white_bg"
+        android:elevation="16dp">
+
+        <RelativeLayout
+            android:id="@+id/ll_actionbar"
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/tv_take_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="15dp"
+                android:drawableLeft="@drawable/angle_left"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="@android:color/black"
+                android:textSize="32sp" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="6dp"
+                android:textColor="@android:color/black"
+                android:textSize="32sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:text="50s"
+                android:textColor="@android:color/black"
+                android:textSize="32sp" />
+
+        </RelativeLayout>
+
+        <com.xdz.seekwork.view.KeyBordView
+            android:id="@+id/kbv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/ll_actionbar" />
+
+    </RelativeLayout>
 
 
 </RelativeLayout>
