@@ -22,11 +22,9 @@ public class SeekersoftApp extends Application {
     public void onCreate() {
         super.onCreate();
         mSeekersoftApp = this;
-        // 初始化bugly
-        //CrashReport.initCrashReport(getApplicationContext(), "900004362", true);
 
-        // TODO 初始化设备信息
-        // SeekerSoftConstant.DEVICEID = DeviceInfoTool.getDeviceId();
+        // 初始化设备信息
+        SeekerSoftConstant.DEVICEID = DeviceInfoTool.getDeviceId();
         // 初始化串口设备
         VendingSerialPort.SingleInit();
         CardReadSerialPort.SingleInit();
