@@ -69,16 +69,22 @@
                 android:textColor="@android:color/black"
                 android:textSize="32sp" />
 
-            <TextView
+            <cc.ibooker.zcountdownviewlib.SingleCountDownView
+                android:id="@+id/singleCountDownView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="16dp"
+                android:paddingStart="15dp"
+                android:paddingLeft="15dp"
+                android:paddingEnd="15dp"
+                android:paddingRight="15dp"
                 android:text="50s"
                 android:textColor="@android:color/black"
                 android:textSize="32sp" />
+
 
         </RelativeLayout>
 

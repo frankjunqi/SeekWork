@@ -1,6 +1,7 @@
 package com.xdz.seekwork;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,7 @@ import com.xdz.seekwork.view.KeyBordView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cc.ibooker.zcountdownviewlib.SingleCountDownView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,10 +47,12 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
     private TextView tv_take_back;
     private TextView tv_title;
+    private SingleCountDownView singleCountDownView;
 
     private MaterialDialog promissionDialog;
     private List<MRoad> list;
     private KeyBordView kbv;
+    private SingleCountDownView singleCountDownViewPop;
 
     // 显示库存
     private TextView tv_qty;
@@ -128,8 +132,45 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
         kbv = findViewById(R.id.kbv);
 
+        // 单个倒计时使用
+        singleCountDownView = findViewById(R.id.singleCountDownView);
+        singleCountDownView.setTextColor(Color.parseColor("#ff000000"));
+        singleCountDownView.setTime(60).setTimeColorHex("#ff000000").setTimeSuffixText("s");
+
+        // 单个倒计时结束事件监听
+        singleCountDownView.setSingleCountDownEndListener(new SingleCountDownView.SingleCountDownEndListener() {
+            @Override
+            public void onSingleCountDownEnd() {
+                // 倒计时结束
+                singleCountDownView.setText("0s");
+                singleCountDownView.setTextColor(Color.parseColor("#D81B60"));
+
+                // TODO 倒计时结束，关闭页面元素
+
+            }
+        });
+
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View customView = inflater.inflate(R.layout.pop_take_layout, null);
+
+        // pop take 单个倒计时使用
+        singleCountDownViewPop = customView.findViewById(R.id.singleCountDownView);
+        singleCountDownViewPop.setTextColor(Color.parseColor("#ff000000"));
+        singleCountDownViewPop.setTime(60).setTimeColorHex("#ff000000").setTimeSuffixText("s");
+
+        // pop take 单个倒计时结束事件监听
+        singleCountDownViewPop.setSingleCountDownEndListener(new SingleCountDownView.SingleCountDownEndListener() {
+            @Override
+            public void onSingleCountDownEnd() {
+                // pop take 倒计时结束
+                singleCountDownView.setText("0s");
+                singleCountDownView.setTextColor(Color.parseColor("#D81B60"));
+
+                // TODO pop take 倒计时结束，关闭页面元素
+
+            }
+        });
+
         tv_qty = customView.findViewById(R.id.tv_qty);
         tv_productname = customView.findViewById(R.id.tv_productname);
         tv_choose_num = customView.findViewById(R.id.tv_choose_num);
@@ -176,6 +217,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         tipDialog.getWindow().setAttributes(wl);
 
         tipDialog.setCancelable(false);
+
 
         onDataReceiveListener = new CardReadSerialPort.OnDataReceiveListener() {
             @Override
@@ -354,6 +396,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                     // 成功逻辑
                     list = response.body().getData();
                     // 可以让输入货道可点击
+                    singleCountDownView.startCountDown();
                 }
             }
 
@@ -615,8 +658,19 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        if (singleCountDownView != null) {
+            singleCountDownView.stopCountDown();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (singleCountDownView != null) {
+            singleCountDownView.pauseCountDown();
+        }
     }
 
     class DownTimer extends CountDownTimer {

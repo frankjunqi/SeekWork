@@ -56,4 +56,6 @@ dependencies {
     api 'com.tencent.bugly:crashreport:latest.release'
 
     api 'com.android.support:multidex:1.0.1'
+
+    api 'com.github.zrunker:ZCountDownView:v1.1'
 }
