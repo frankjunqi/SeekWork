@@ -134,14 +134,26 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         // 单个倒计时使用
         singleCountDownView = findViewById(R.id.singleCountDownView);
         singleCountDownView.setTextColor(Color.parseColor("#ff000000"));
-        singleCountDownView.setTime(60).setTimeColorHex("#ff000000").setTimeSuffixText("s");
+        singleCountDownView.setTime(6).setTimeColorHex("#ff000000").setTimeSuffixText("s");
 
         // 单个倒计时结束事件监听
         singleCountDownView.setSingleCountDownEndListener(new SingleCountDownView.SingleCountDownEndListener() {
             @Override
             public void onSingleCountDownEnd() {
                 // TODO 倒计时结束，关闭页面元素
+                if (singleCountDownView != null) {
+                    singleCountDownView.stopCountDown();
+                }
 
+                if (promissionDialog != null && promissionDialog.isShowing()) {
+                    promissionDialog.dismiss();
+                }
+
+                if (tipDialog != null && tipDialog.isShowing()) {
+                    tipDialog.dismiss();
+                }
+
+                TakeActivity.this.finish();
             }
         });
 
@@ -151,7 +163,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         // pop take 单个倒计时使用
         singleCountDownViewPop = customView.findViewById(R.id.singleCountDownView);
         singleCountDownViewPop.setTextColor(Color.parseColor("#ff000000"));
-        singleCountDownViewPop.setTime(60);
+        singleCountDownViewPop.setTime(6);
         singleCountDownViewPop.setTimeColorHex("#ff000000");
         singleCountDownViewPop.setTimeSuffixText("s");
 
@@ -160,7 +172,16 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onSingleCountDownEnd() {
                 // TODO pop take 倒计时结束，关闭页面元素
+                promissionDialog.dismiss();
 
+                // 停止pop倒计时
+                if (singleCountDownViewPop != null) {
+                    singleCountDownViewPop.stopCountDown();
+                }
+
+                if (singleCountDownView != null) {
+                    singleCountDownView.startCountDown();
+                }
             }
         });
 
@@ -322,7 +343,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
                         // 开启弹框倒计时
                         if (singleCountDownViewPop != null) {
-                            singleCountDownViewPop.setTime(60);
+                            singleCountDownViewPop.setTime(6);
                             singleCountDownViewPop.startCountDown();
                         }
                     }
@@ -675,7 +696,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
         if (singleCountDownView != null) {
-            singleCountDownView.stopCountDown();
+            singleCountDownView.pauseCountDown();
         }
     }
 
@@ -683,7 +704,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         if (singleCountDownView != null) {
-            singleCountDownView.pauseCountDown();
+            singleCountDownView.stopCountDown();
         }
     }
 
