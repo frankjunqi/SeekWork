@@ -95,6 +95,16 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
             if (promissionDialog != null && promissionDialog.isShowing()) {
                 promissionDialog.dismiss();
             }
+
+            // 停止pop倒计时
+            if (singleCountDownViewPop != null) {
+                singleCountDownViewPop.stopCountDown();
+            }
+
+            // 重启主页面倒计时
+            if (singleCountDownView != null) {
+                singleCountDownView.startCountDown();
+            }
         }
 
         // 成功出货用绿色icon 失败用红色icon
@@ -141,10 +151,6 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         singleCountDownView.setSingleCountDownEndListener(new SingleCountDownView.SingleCountDownEndListener() {
             @Override
             public void onSingleCountDownEnd() {
-                // 倒计时结束
-                singleCountDownView.setText("0s");
-                singleCountDownView.setTextColor(Color.parseColor("#D81B60"));
-
                 // TODO 倒计时结束，关闭页面元素
 
             }
@@ -156,16 +162,14 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         // pop take 单个倒计时使用
         singleCountDownViewPop = customView.findViewById(R.id.singleCountDownView);
         singleCountDownViewPop.setTextColor(Color.parseColor("#ff000000"));
-        singleCountDownViewPop.setTime(60).setTimeColorHex("#ff000000").setTimeSuffixText("s");
+        singleCountDownViewPop.setTime(60);
+        singleCountDownViewPop.setTimeColorHex("#ff000000");
+        singleCountDownViewPop.setTimeSuffixText("s");
 
         // pop take 单个倒计时结束事件监听
         singleCountDownViewPop.setSingleCountDownEndListener(new SingleCountDownView.SingleCountDownEndListener() {
             @Override
             public void onSingleCountDownEnd() {
-                // pop take 倒计时结束
-                singleCountDownView.setText("0s");
-                singleCountDownView.setTextColor(Color.parseColor("#D81B60"));
-
                 // TODO pop take 倒计时结束，关闭页面元素
 
             }
@@ -321,6 +325,17 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
                         // 授权弹框
                         promissionDialog.show();
+
+                        // 暂停主界面倒计时
+                        if (singleCountDownView != null) {
+                            singleCountDownView.pauseCountDown();
+                        }
+
+                        // 开启弹框倒计时
+                        if (singleCountDownViewPop != null) {
+                            singleCountDownViewPop.setTime(60);
+                            singleCountDownViewPop.startCountDown();
+                        }
                     }
 
                 }
@@ -376,6 +391,16 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
             // 弹出框操作中返回取消按钮
             if (promissionDialog != null && promissionDialog.isShowing()) {
                 promissionDialog.dismiss();
+
+                // 停止pop倒计时
+                if (singleCountDownViewPop != null) {
+                    singleCountDownViewPop.stopCountDown();
+                }
+
+                // 重启主页面倒计时
+                if (singleCountDownView != null) {
+                    singleCountDownView.startCountDown();
+                }
             }
         } else if (v.getId() == R.id.tv_take_back) {
             // 取货页面关闭
