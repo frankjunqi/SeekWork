@@ -96,7 +96,6 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                 promissionDialog.dismiss();
             }
         }
-
         // 成功出货用绿色icon 失败用红色icon
         if (isSuccess) {
             iv_tip_error.setBackgroundResource(R.drawable.check_circle_fill);
