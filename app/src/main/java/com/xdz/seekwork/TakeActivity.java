@@ -95,16 +95,6 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
             if (promissionDialog != null && promissionDialog.isShowing()) {
                 promissionDialog.dismiss();
             }
-
-            // 停止pop倒计时
-            if (singleCountDownViewPop != null) {
-                singleCountDownViewPop.stopCountDown();
-            }
-
-            // 重启主页面倒计时
-            if (singleCountDownView != null) {
-                singleCountDownView.startCountDown();
-            }
         }
 
         // 成功出货用绿色icon 失败用红色icon
@@ -721,8 +711,17 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                 tipDialog.dismiss();
             }
             if (closePage) {
+                // 停止pop倒计时
+                if (singleCountDownViewPop != null) {
+                    singleCountDownViewPop.stopCountDown();
+                }
                 // 关闭当前activity页面
                 TakeActivity.this.finish();
+            } else {
+                // 重启主页面倒计时
+                if (singleCountDownView != null) {
+                    singleCountDownView.startCountDown();
+                }
             }
         }
 
