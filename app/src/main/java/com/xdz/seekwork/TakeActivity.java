@@ -94,6 +94,8 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showTipDialog(String tips, boolean closePage, boolean isSuccess) {
+        iv_card.setVisibility(View.INVISIBLE);
+        ll_progress.setVisibility(View.INVISIBLE);
         rl_tip.setVisibility(View.VISIBLE);
         // 成功出货用绿色icon 失败用红色icon
         if (isSuccess) {
@@ -138,6 +140,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                         CardReadSerialPort.SingleInit().setOnDataReceiveListener(null);
 
                         // 初始化界面
+                        rl_tip.setVisibility(View.GONE);
                         iv_card.setVisibility(View.GONE);
                         ll_progress.setVisibility(View.VISIBLE);
 
@@ -211,6 +214,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                         // 设置dialog中数据
                         iv_card.setVisibility(View.VISIBLE);
                         ll_progress.setVisibility(View.INVISIBLE);
+                        rl_tip.setVisibility(View.INVISIBLE);
 
                         tv_qty.setText(String.valueOf(mRoad.getQty()));
                         tv_productname.setText(mRoad.getProductName());
