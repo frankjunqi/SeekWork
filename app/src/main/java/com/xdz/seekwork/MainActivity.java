@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +50,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public final static String[] PERMS_WRITE = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_SETTINGS};
 
     private CardReadSerialPort cardReadSerialPort;
+
+    private CountDownTimer timer = new CountDownTimer(10000, 1000) {
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if (btn_try != null) {
+                btn_try.setText((millisUntilFinished / 1000) + "秒后重试");
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            btn_try.setEnabled(true);
+            btn_try.setText("重试");
+            loadRegisterMachine();
+        }
+    };
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
@@ -94,12 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_try.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 加载进度
-                tv_error.setText("");
-                pb_loadingdata.setVisibility(View.VISIBLE);
-                btn_try.setVisibility(View.GONE);
-                // 请求接口
-                registerMachine();
+                loadRegisterMachine();
             }
         });
 
@@ -110,6 +123,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         registerMachine();
 
         EasyPermissions.requestPermissions(this, "请求权限", 12, PERMS_WRITE);
+    }
+
+    private void loadRegisterMachine() {
+        // 加载进度
+        tv_error.setText("");
+        pb_loadingdata.setVisibility(View.VISIBLE);
+        btn_try.setVisibility(View.GONE);
+        // 请求接口
+        registerMachine();
     }
 
 
@@ -157,7 +179,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tv_error.setText("错误：" + response.body().getMsg());
                     pb_loadingdata.setVisibility(View.GONE);
                     btn_try.setVisibility(View.VISIBLE);
-                    // TODO 开启定时器 10秒再发送一次请求直到成功 才关闭这个模态框 关闭这个重试定时器
+
+                    // 开启定时器 10秒再发送一次请求直到成功 才关闭这个模态框 关闭这个重试定时器
+                    btn_try.setEnabled(false);
+                    timer.start();
 
                 }
             }
@@ -176,6 +201,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 pb_loadingdata.setVisibility(View.GONE);
                 btn_try.setVisibility(View.VISIBLE);
+
+                // 开启定时器 10秒再发送一次请求直到成功 才关闭这个模态框 关闭这个重试定时器
+                btn_try.setEnabled(false);
+                timer.start();
             }
         });
     }
