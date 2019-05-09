@@ -1,6 +1,7 @@
 package com.xdz.seekwork;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -54,7 +55,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     private KeyBordView kbv;
     private SingleCountDownView singleCountDownViewPop;
     private RelativeLayout rl_tip;
-    private TextView iv_tip_result;
+    private ImageView iv_tip_result;
     private TextView tv_tips_result;
 
     // 显示库存
@@ -123,109 +124,9 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
         kbv = findViewById(R.id.kbv);
 
-        // 单个倒计时使用
-        singleCountDownView = findViewById(R.id.singleCountDownView);
-        singleCountDownView.setTextColor(Color.parseColor("#ff000000"));
-        singleCountDownView.setTime(6).setTimeColorHex("#ff000000").setTimeSuffixText("s");
+        initTakeDialog();
 
-        // 单个倒计时结束事件监听
-        singleCountDownView.setSingleCountDownEndListener(new SingleCountDownView.SingleCountDownEndListener() {
-            @Override
-            public void onSingleCountDownEnd() {
-                // TODO 倒计时结束，关闭页面元素
-                if (singleCountDownView != null) {
-                    singleCountDownView.stopCountDown();
-                }
-
-                if (promissionDialog != null && promissionDialog.isShowing()) {
-                    promissionDialog.dismiss();
-                }
-
-                if (tipDialog != null && tipDialog.isShowing()) {
-                    tipDialog.dismiss();
-                }
-
-                TakeActivity.this.finish();
-            }
-        });
-
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View customView = inflater.inflate(R.layout.pop_take_layout, null);
-        rl_tip = customView.findViewById(R.id.rl_tip);
-        iv_tip_result = customView.findViewById(R.id.iv_tip_result);
-        tv_tips_result = customView.findViewById(R.id.tv_tips_result);
-
-        // pop take 单个倒计时使用
-        singleCountDownViewPop = customView.findViewById(R.id.singleCountDownView);
-        singleCountDownViewPop.setTextColor(Color.parseColor("#ff000000"));
-        singleCountDownViewPop.setTime(6);
-        singleCountDownViewPop.setTimeColorHex("#ff000000");
-        singleCountDownViewPop.setTimeSuffixText("s");
-
-        // pop take 单个倒计时结束事件监听
-        singleCountDownViewPop.setSingleCountDownEndListener(new SingleCountDownView.SingleCountDownEndListener() {
-            @Override
-            public void onSingleCountDownEnd() {
-                // TODO pop take 倒计时结束，关闭页面元素
-                promissionDialog.dismiss();
-
-                // 停止pop倒计时
-                if (singleCountDownViewPop != null) {
-                    singleCountDownViewPop.stopCountDown();
-                }
-
-                if (singleCountDownView != null) {
-                    singleCountDownView.startCountDown();
-                }
-            }
-        });
-
-        tv_qty = customView.findViewById(R.id.tv_qty);
-        tv_productname = customView.findViewById(R.id.tv_productname);
-        tv_choose_num = customView.findViewById(R.id.tv_choose_num);
-
-        tv_cut = customView.findViewById(R.id.tv_cut);
-        tv_cut.setOnClickListener(this);
-
-        tv_add = customView.findViewById(R.id.tv_add);
-        tv_add.setOnClickListener(this);
-
-        tv_back = customView.findViewById(R.id.tv_back);
-        tv_back.setOnClickListener(this);
-
-        iv_card = customView.findViewById(R.id.iv_card);
-        ll_progress = customView.findViewById(R.id.ll_progress);
-
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
-        int widthPixels = outMetrics.widthPixels;
-        int heightPixels = outMetrics.heightPixels;
-
-        // 刷卡后续操作
-        promissionDialog = new MaterialDialog.Builder(this).customView(customView, false).build();
-
-        WindowManager.LayoutParams wlp = promissionDialog.getWindow().getAttributes();
-        wlp.width = widthPixels - 88;
-        wlp.height = heightPixels / 4 * 3;
-        promissionDialog.getWindow().setAttributes(wlp);
-
-        promissionDialog.setCancelable(false);
-
-
-        // dialog tip
-        View customViewTip = inflater.inflate(R.layout.pop_tips_layout, null);
-        tv_tips = customViewTip.findViewById(R.id.tv_tips);
-        iv_tip_error = customViewTip.findViewById(R.id.iv_tip_error);
-
-        tipDialog = new MaterialDialog.Builder(this).customView(customViewTip, false).build();
-
-        WindowManager.LayoutParams wl = tipDialog.getWindow().getAttributes();
-        wl.width = widthPixels / 5 * 4;
-        wl.height = heightPixels / 2;
-        tipDialog.getWindow().setAttributes(wl);
-
-        tipDialog.setCancelable(false);
-
+        initTipDialog();
 
         onDataReceiveListener = new CardReadSerialPort.OnDataReceiveListener() {
             @Override
@@ -330,16 +231,6 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
                         // 授权弹框
                         promissionDialog.show();
 
-                        // 暂停主界面倒计时
-                        if (singleCountDownView != null) {
-                            singleCountDownView.pauseCountDown();
-                        }
-
-                        // 开启弹框倒计时
-                        if (singleCountDownViewPop != null) {
-                            singleCountDownViewPop.setTime(6);
-                            singleCountDownViewPop.startCountDown();
-                        }
                     }
 
                 }
@@ -348,6 +239,141 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
         queryRoad();
 
+    }
+
+    private void initTakeDialog() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View customView = inflater.inflate(R.layout.pop_take_layout, null);
+        rl_tip = customView.findViewById(R.id.rl_tip);
+        iv_tip_result = customView.findViewById(R.id.iv_tip_result);
+        tv_tips_result = customView.findViewById(R.id.tv_tips_result);
+
+        tv_qty = customView.findViewById(R.id.tv_qty);
+        tv_productname = customView.findViewById(R.id.tv_productname);
+        tv_choose_num = customView.findViewById(R.id.tv_choose_num);
+
+        tv_cut = customView.findViewById(R.id.tv_cut);
+        tv_cut.setOnClickListener(this);
+
+        tv_add = customView.findViewById(R.id.tv_add);
+        tv_add.setOnClickListener(this);
+
+        tv_back = customView.findViewById(R.id.tv_back);
+        tv_back.setOnClickListener(this);
+
+        iv_card = customView.findViewById(R.id.iv_card);
+        ll_progress = customView.findViewById(R.id.ll_progress);
+
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
+        int widthPixels = outMetrics.widthPixels;
+        int heightPixels = outMetrics.heightPixels;
+
+        // 刷卡后续操作
+        promissionDialog = new MaterialDialog.Builder(this).customView(customView, false).build();
+
+        WindowManager.LayoutParams wlp = promissionDialog.getWindow().getAttributes();
+        wlp.width = widthPixels - 88;
+        wlp.height = heightPixels / 4 * 3;
+        promissionDialog.getWindow().setAttributes(wlp);
+        promissionDialog.setCancelable(false);
+
+        promissionDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                // 开启pop倒计时
+                if (singleCountDownViewPop != null) {
+                    singleCountDownViewPop.setTime(6);
+                    singleCountDownViewPop.startCountDown();
+                }
+                // 暂停主界面倒计时
+                if (singleCountDownView != null) {
+                    singleCountDownView.pauseCountDown();
+                }
+            }
+        });
+
+        promissionDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                // 停止pop倒计时
+                if (singleCountDownViewPop != null) {
+                    singleCountDownViewPop.stopCountDown();
+                }
+                // 开启主界面倒计时
+                if (singleCountDownView != null) {
+                    singleCountDownView.startCountDown();
+                }
+            }
+        });
+
+        // pop take 单个倒计时使用
+        singleCountDownViewPop = customView.findViewById(R.id.singleCountDownView);
+        singleCountDownViewPop.setTextColor(Color.parseColor("#ff000000"));
+        singleCountDownViewPop.setTime(6);
+        singleCountDownViewPop.setTimeColorHex("#ff000000");
+        singleCountDownViewPop.setTimeSuffixText("s");
+
+        // pop take 单个倒计时结束事件监听
+        singleCountDownViewPop.setSingleCountDownEndListener(new SingleCountDownView.SingleCountDownEndListener() {
+            @Override
+            public void onSingleCountDownEnd() {
+                // TODO pop take 倒计时结束，关闭页面元素
+                promissionDialog.dismiss();
+            }
+        });
+    }
+
+    private void initTipDialog() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        // dialog tip
+        View customViewTip = inflater.inflate(R.layout.pop_tips_layout, null);
+        tv_tips = customViewTip.findViewById(R.id.tv_tips);
+        iv_tip_error = customViewTip.findViewById(R.id.iv_tip_error);
+        tipDialog = new MaterialDialog.Builder(this).customView(customViewTip, false).build();
+        WindowManager.LayoutParams wl = tipDialog.getWindow().getAttributes();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
+        int widthPixels = outMetrics.widthPixels;
+        int heightPixels = outMetrics.heightPixels;
+        wl.width = widthPixels / 5 * 4;
+        wl.height = heightPixels / 2;
+        tipDialog.getWindow().setAttributes(wl);
+        tipDialog.setCancelable(false);
+        tipDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                // 重启主界面倒计时
+                if (singleCountDownView != null) {
+                    singleCountDownView.startCountDown();
+                }
+            }
+        });
+        tipDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                // 暂停主界面倒计时
+                if (singleCountDownView != null) {
+                    singleCountDownView.pauseCountDown();
+                }
+            }
+        });
+
+        // 单个倒计时使用
+        singleCountDownView = findViewById(R.id.singleCountDownView);
+        singleCountDownView.setTextColor(Color.parseColor("#ff000000"));
+        singleCountDownView.setTime(6).setTimeColorHex("#ff000000").setTimeSuffixText("s");
+
+        // 单个倒计时结束事件监听
+        singleCountDownView.setSingleCountDownEndListener(new SingleCountDownView.SingleCountDownEndListener() {
+            @Override
+            public void onSingleCountDownEnd() {
+                if (tipDialog != null && tipDialog.isShowing()) {
+                    tipDialog.dismiss();
+                }
+                TakeActivity.this.finish();
+            }
+        });
     }
 
 
@@ -395,16 +421,6 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
             // 弹出框操作中返回取消按钮
             if (promissionDialog != null && promissionDialog.isShowing()) {
                 promissionDialog.dismiss();
-
-                // 停止pop倒计时
-                if (singleCountDownViewPop != null) {
-                    singleCountDownViewPop.stopCountDown();
-                }
-
-                // 重启主页面倒计时
-                if (singleCountDownView != null) {
-                    singleCountDownView.startCountDown();
-                }
             }
         } else if (v.getId() == R.id.tv_take_back) {
             // 取货页面关闭
@@ -709,10 +725,6 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
             super(3000, 1000);
         }
 
-        public DownTimer(boolean closePage) {
-            super(3000, 1000);
-        }
-
         @Override
         public void onTick(long millusUntilFinished) {
         }
@@ -721,10 +733,6 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         public void onFinish() {
             if (tipDialog != null && tipDialog.isShowing()) {
                 tipDialog.dismiss();
-            }
-            // 重启主页面倒计时
-            if (singleCountDownView != null) {
-                singleCountDownView.startCountDown();
             }
         }
 
