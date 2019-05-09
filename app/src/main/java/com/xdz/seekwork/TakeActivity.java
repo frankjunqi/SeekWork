@@ -283,7 +283,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
             public void onShow(DialogInterface dialog) {
                 // 开启pop倒计时
                 if (singleCountDownViewPop != null) {
-                    singleCountDownViewPop.setTime(6);
+                    singleCountDownViewPop.setTime(60);
                     singleCountDownViewPop.startCountDown();
                 }
                 // 暂停主界面倒计时
@@ -310,7 +310,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         // pop take 单个倒计时使用
         singleCountDownViewPop = customView.findViewById(R.id.singleCountDownView);
         singleCountDownViewPop.setTextColor(Color.parseColor("#ff000000"));
-        singleCountDownViewPop.setTime(6);
+        singleCountDownViewPop.setTime(60);
         singleCountDownViewPop.setTimeColorHex("#ff000000");
         singleCountDownViewPop.setTimeSuffixText("s");
 
@@ -362,7 +362,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         // 单个倒计时使用
         singleCountDownView = findViewById(R.id.singleCountDownView);
         singleCountDownView.setTextColor(Color.parseColor("#ff000000"));
-        singleCountDownView.setTime(6).setTimeColorHex("#ff000000").setTimeSuffixText("s");
+        singleCountDownView.setTime(60).setTimeColorHex("#ff000000").setTimeSuffixText("s");
 
         // 单个倒计时结束事件监听
         singleCountDownView.setSingleCountDownEndListener(new SingleCountDownView.SingleCountDownEndListener() {
