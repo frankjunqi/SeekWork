@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -53,6 +53,9 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     private List<MRoad> list;
     private KeyBordView kbv;
     private SingleCountDownView singleCountDownViewPop;
+    private RelativeLayout rl_tip;
+    private TextView iv_tip_result;
+    private TextView tv_tips_result;
 
     // 显示库存
     private TextView tv_qty;
@@ -90,25 +93,14 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showTipDialog(String tips, boolean closePage, boolean isSuccess) {
-        if (closePage) {
-            // 关闭 取货dilog
-            if (promissionDialog != null && promissionDialog.isShowing()) {
-                promissionDialog.dismiss();
-            }
-        }
+        rl_tip.setVisibility(View.VISIBLE);
         // 成功出货用绿色icon 失败用红色icon
         if (isSuccess) {
-            iv_tip_error.setBackgroundResource(R.drawable.check_circle_fill);
+            iv_tip_result.setBackgroundResource(R.drawable.check_circle_fill);
         } else {
-            iv_tip_error.setBackgroundResource(R.drawable.icon_report_fill);
+            iv_tip_result.setBackgroundResource(R.drawable.icon_report_fill);
         }
-
-        tv_tips.setText(tips);
-        if (tipDialog != null && !tipDialog.isShowing()) {
-            tipDialog.show();
-        }
-        tipDialog.show();
-        new DownTimer(closePage).start();
+        tv_tips_result.setText(tips);
     }
 
     @Override
@@ -159,6 +151,9 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View customView = inflater.inflate(R.layout.pop_take_layout, null);
+        rl_tip = customView.findViewById(R.id.rl_tip);
+        iv_tip_result = customView.findViewById(R.id.iv_tip_result);
+        tv_tips_result = customView.findViewById(R.id.tv_tips_result);
 
         // pop take 单个倒计时使用
         singleCountDownViewPop = customView.findViewById(R.id.singleCountDownView);
@@ -220,7 +215,6 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         // dialog tip
         View customViewTip = inflater.inflate(R.layout.pop_tips_layout, null);
         tv_tips = customViewTip.findViewById(R.id.tv_tips);
-
         iv_tip_error = customViewTip.findViewById(R.id.iv_tip_error);
 
         tipDialog = new MaterialDialog.Builder(this).customView(customViewTip, false).build();
@@ -710,7 +704,6 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
     class DownTimer extends CountDownTimer {
 
-        private boolean closePage = false;
 
         public DownTimer() {
             super(3000, 1000);
@@ -718,7 +711,6 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
         public DownTimer(boolean closePage) {
             super(3000, 1000);
-            this.closePage = closePage;
         }
 
         @Override
@@ -730,18 +722,9 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
             if (tipDialog != null && tipDialog.isShowing()) {
                 tipDialog.dismiss();
             }
-            if (closePage) {
-                // 停止pop倒计时
-                if (singleCountDownViewPop != null) {
-                    singleCountDownViewPop.stopCountDown();
-                }
-                // 关闭当前activity页面
-                TakeActivity.this.finish();
-            } else {
-                // 重启主页面倒计时
-                if (singleCountDownView != null) {
-                    singleCountDownView.startCountDown();
-                }
+            // 重启主页面倒计时
+            if (singleCountDownView != null) {
+                singleCountDownView.startCountDown();
             }
         }
 
