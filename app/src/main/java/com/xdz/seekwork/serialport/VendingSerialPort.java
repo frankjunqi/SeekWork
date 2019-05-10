@@ -68,7 +68,7 @@ public class VendingSerialPort {
                 byte[] sendData = new byte[10];
                 sendData[0] = (byte) 0xFF;
                 sendData[1] = (byte) 0x0A;
-                sendData[2] = (byte) 0x00;
+                sendData[2] = (byte) 0x01;
                 sendData[3] = (byte) 0xA2;
                 sendData[4] = (byte) shipmentObject.containerNum;
                 sendData[5] = (byte) shipmentObject.getProHang();
