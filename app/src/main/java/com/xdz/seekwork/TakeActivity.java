@@ -31,11 +31,11 @@ import com.xdz.seekwork.util.LogCat;
 import com.xdz.seekwork.util.SeekerSoftConstant;
 import com.xdz.seekwork.util.SerialResultUtil;
 import com.xdz.seekwork.view.KeyBordView;
+import com.xdz.seekwork.view.SingleCountDownView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cc.ibooker.zcountdownviewlib.SingleCountDownView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -104,6 +104,11 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
             iv_tip_result.setBackgroundResource(R.drawable.icon_report_fill);
         }
         tv_tips_result.setText(tips);
+
+        if (closePage) {
+            new ClosePage().start();
+        }
+
     }
 
     @Override
@@ -707,18 +712,36 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        if (singleCountDownView != null) {
-            singleCountDownView.pauseCountDown();
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (singleCountDownView != null) {
             singleCountDownView.stopCountDown();
+            singleCountDownView = null;
+        }
+
+        if (singleCountDownViewPop != null) {
+            singleCountDownViewPop.stopCountDown();
+            singleCountDownViewPop = null;
+        }
+    }
+
+    class ClosePage extends CountDownTimer {
+
+        public ClosePage() {
+            super(3000, 1000);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {
+            if (promissionDialog != null && promissionDialog.isShowing()) {
+                promissionDialog.dismiss();
+            }
+            TakeActivity.this.finish();
         }
     }
 
