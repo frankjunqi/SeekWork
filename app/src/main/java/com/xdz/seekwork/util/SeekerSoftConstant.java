@@ -24,4 +24,7 @@ public class SeekerSoftConstant {
     public static final String Take = "Take";
 
 
+    public static final String EXITAPP = "EXITAPP";
+
+
 }

@@ -22,6 +22,7 @@ import com.xdz.seekwork.network.api.SrvResult;
 import com.xdz.seekwork.network.entity.seekwork.MMachineInfo;
 import com.xdz.seekwork.network.gsonfactory.GsonConverterFactory;
 import com.xdz.seekwork.serialport.CardReadSerialPort;
+import com.xdz.seekwork.serialport.VendingSerialPort;
 import com.xdz.seekwork.util.LogCat;
 import com.xdz.seekwork.util.SeekerSoftConstant;
 
@@ -123,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         registerMachine();
 
         EasyPermissions.requestPermissions(this, "请求权限", 12, PERMS_WRITE);
+
+        startActivity(new Intent(this, ManageActivity.class));
     }
 
     private void loadRegisterMachine() {
@@ -251,6 +254,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
         CardReadSerialPort.SingleInit().setOnDataReceiveListener(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.exit(0);//直接结束程序
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        int exitFlag = intent.getIntExtra(SeekerSoftConstant.EXITAPP, 0);
+        if (exitFlag == 1) {
+            // 退出程序
+            CardReadSerialPort.SingleInit().closeSerialPort();
+            VendingSerialPort.SingleInit().closeSerialPort();
+            this.finish();
+        }
     }
 
     @Override

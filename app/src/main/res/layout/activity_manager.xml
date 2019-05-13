@@ -41,13 +41,61 @@
         android:background="@drawable/shape_corner_white_bg"
         android:elevation="16dp"
         android:orientation="vertical"
-        android:padding="15dp"
         android:weightSum="3">
+
+        <RelativeLayout
+            android:id="@+id/ll_actionbar"
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_take_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:drawableLeft="@drawable/angle_left"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:text="返回"
+                android:textColor="@android:color/black"
+                android:textSize="32sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="6dp"
+                android:text="系统管理"
+                android:textColor="@android:color/black"
+                android:textSize="32sp" />
+
+            <com.xdz.seekwork.view.SingleCountDownView
+                android:id="@+id/singleCountDownView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:paddingStart="15dp"
+                android:paddingLeft="15dp"
+                android:paddingEnd="15dp"
+                android:paddingRight="15dp"
+                android:textColor="@android:color/black"
+                android:textSize="32sp" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/ll_one"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -77,12 +125,13 @@
                 android:textSize="30sp" />
         </LinearLayout>
 
-
         <LinearLayout
             android:id="@+id/ll_three"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/ll_one"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:layout_weight="1"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -95,7 +144,7 @@
                 android:layout_margin="12dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_exit"
-                android:text="退出系统"
+                android:text="关闭系统"
                 android:textColor="@android:color/white"
                 android:textSize="30sp" />
 
@@ -107,10 +156,11 @@
                 android:layout_margin="12dp"
                 android:layout_weight="1"
                 android:background="@drawable/selector_btn_take"
-                android:text="退出管理"
+                android:text="返回"
                 android:textColor="@android:color/white"
                 android:textSize="30sp" />
         </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>
