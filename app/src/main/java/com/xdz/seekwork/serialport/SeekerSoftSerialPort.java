@@ -74,4 +74,11 @@ public class SeekerSoftSerialPort {
 
     }
 
+    public boolean getOpenSerialResult() {
+        if (mFd == null) {
+            return false;
+        }
+        return true;
+    }
+
 }

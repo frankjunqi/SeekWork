@@ -36,6 +36,11 @@ public class VendingSerialPort {
             isStop = false;
             portUtil = new VendingSerialPort();
             portUtil.onCreate();
+
+            // 初始化是否成功
+            if (mSerialPort == null) {
+                portUtil = null;
+            }
         }
         return portUtil;
     }
@@ -141,11 +146,14 @@ public class VendingSerialPort {
     private void onCreate() {
         try {
             mSerialPort = new SeekerSoftSerialPort(new File(devicePath), baudrate, 0);
-            mOutputStream = mSerialPort.getOutputStream();
-            mInputStream = mSerialPort.getInputStream();
-
-            mReadThread = new ReadThread();
-            mReadThread.start();
+            if (mSerialPort.getOpenSerialResult()) {
+                mOutputStream = mSerialPort.getOutputStream();
+                mInputStream = mSerialPort.getInputStream();
+                mReadThread = new ReadThread();
+                mReadThread.start();
+            } else {
+                mSerialPort = null;
+            }
         } catch (Exception e) {
             Log.e(TAG, "Init Serial Port Failed");
             mSerialPort = null;

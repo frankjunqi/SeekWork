@@ -62,6 +62,9 @@ public class CardReadSerialPort {
             isStop = false;
             portUtil = new CardReadSerialPort();
             portUtil.onCreate();
+            if (mSerialPort == null) {
+                portUtil = null;
+            }
         }
         return portUtil;
     }
@@ -70,11 +73,14 @@ public class CardReadSerialPort {
     private void onCreate() {
         try {
             mSerialPort = new SeekerSoftSerialPort(new File(devicePath), baudrate, 0);
-            mOutputStream = mSerialPort.getOutputStream();
-            mInputStream = mSerialPort.getInputStream();
-
-            mReadThread = new ReadThread();
-            mReadThread.start();
+            if (mSerialPort.getOpenSerialResult()) {
+                mOutputStream = mSerialPort.getOutputStream();
+                mInputStream = mSerialPort.getInputStream();
+                mReadThread = new ReadThread();
+                mReadThread.start();
+            } else {
+                mSerialPort = null;
+            }
         } catch (Exception e) {
             Log.e(TAG, "Init Serial Port Failed");
             mSerialPort = null;

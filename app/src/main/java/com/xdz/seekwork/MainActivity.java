@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         EasyPermissions.requestPermissions(this, "请求权限", 12, PERMS_WRITE);
 
-        startActivity(new Intent(this, ManageActivity.class));
+        //startActivity(new Intent(this, ManageActivity.class));
     }
 
     private void loadRegisterMachine() {
@@ -156,6 +157,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void registerMachine() {
+
+        // 初始化串口设备
+        CardReadSerialPort cardReadSerialPort = CardReadSerialPort.SingleInit();
+        VendingSerialPort vendingSerialPort = VendingSerialPort.SingleInit();
+        String error = "";
+        if (cardReadSerialPort == null) {
+            error = "读卡器串口打开失败。\n";
+        }
+
+        if (vendingSerialPort == null) {
+            error = error + "柜子串口打开失败";
+        }
+
+        if (!TextUtils.isEmpty(error)) {
+            if (!promissionDialog.isShowing()) {
+                promissionDialog.show();
+            }
+            tv_error.setText("错误：\n" + error);
+            pb_loadingdata.setVisibility(View.GONE);
+            btn_try.setVisibility(View.VISIBLE);
+
+            // 开启定时器 10秒再发送一次请求直到成功 才关闭这个模态框 关闭这个重试定时器
+            btn_try.setEnabled(false);
+            timer.start();
+            return;
+        }
+
         // 异步加载(get)
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Host.HOST).addConverterFactory(GsonConverterFactory.create()).build();
         SeekWorkService service = retrofit.create(SeekWorkService.class);
@@ -242,12 +270,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        CardReadSerialPort.SingleInit().setOnDataReceiveListener(new CardReadSerialPort.OnDataReceiveListener() {
-            @Override
-            public void onDataReceiveString(String IDNUM) {
-                loginValidate(IDNUM);
-            }
-        });
+        if (CardReadSerialPort.SingleInit() != null) {
+            CardReadSerialPort.SingleInit().setOnDataReceiveListener(new CardReadSerialPort.OnDataReceiveListener() {
+                @Override
+                public void onDataReceiveString(String IDNUM) {
+                    loginValidate(IDNUM);
+                }
+            });
+        }
     }
 
     @Override

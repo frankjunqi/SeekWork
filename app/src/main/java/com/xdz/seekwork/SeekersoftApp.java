@@ -25,9 +25,7 @@ public class SeekersoftApp extends Application {
 
         // 初始化设备信息
         // SeekerSoftConstant.DEVICEID = DeviceInfoTool.getDeviceId();
-        // 初始化串口设备
-        VendingSerialPort.SingleInit();
-        CardReadSerialPort.SingleInit();
+
 
     }
 
