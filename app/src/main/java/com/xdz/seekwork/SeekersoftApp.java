@@ -22,7 +22,7 @@ public class SeekersoftApp extends Application {
         mSeekersoftApp = this;
 
         // 初始化设备信息
-        SeekerSoftConstant.DEVICEID = DeviceInfoTool.getDeviceId();
+        //SeekerSoftConstant.DEVICEID = DeviceInfoTool.getDeviceId();
 
 
     }

@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        hideNavigation();
         btn_take = findViewById(R.id.btn_take);
         btn_take.setOnClickListener(this);
         btn_borrow = findViewById(R.id.btn_borrow);
@@ -170,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             error = error + "柜子串口打开失败";
         }
 
+        error = "";
         if (!TextUtils.isEmpty(error)) {
             if (!promissionDialog.isShowing()) {
                 promissionDialog.show();
@@ -278,6 +280,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
+
+
+    }
+
+    public boolean hideNavigation() {
+        boolean ishide;
+        try {
+            String command = "LD_LIBRARY_PATH=/vendor/lib:/system/lib service call activity 42 s16 com.android.systemui";
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+            ishide = true;
+        } catch (Exception ex) {
+            ishide = false;
+        }
+        return ishide;
+    }
+
+    public boolean showNavigation() {
+        boolean isshow;
+        try {
+            String command = "LD_LIBRARY_PATH=/vendor/lib:/system/lib am startservice -n com.android.systemui/.SystemUIService";
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
+            proc.waitFor();
+            isshow = true;
+        } catch (Exception e) {
+            isshow = false;
+            e.printStackTrace();
+        }
+        return isshow;
     }
 
     @Override
@@ -300,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // 退出程序
             CardReadSerialPort.SingleInit().closeSerialPort();
             VendingSerialPort.SingleInit().closeSerialPort();
+            showNavigation();
             this.finish();
         }
     }
