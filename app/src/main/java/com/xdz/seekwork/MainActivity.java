@@ -4,16 +4,20 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -37,6 +41,11 @@ import retrofit2.Retrofit;
 
 // 首页
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
+
+
+    //private StatusBarManager mStatusBarManager;
+
+    private RelativeLayout customView;
 
     private Button btn_take, btn_borrow, btn_back;
 
@@ -74,8 +83,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        // dialog tip
+        customView = (RelativeLayout) inflater.inflate(R.layout.activity_main, null);
+        setContentView(customView);
+
+        //mStatusBarManager = (StatusBarManager) mContext.getSystemService(Context.STATUS_BAR_SERVICE);
+
         hideNavigation();
+        //prohibitDropDown();
         btn_take = findViewById(R.id.btn_take);
         btn_take.setOnClickListener(this);
         btn_borrow = findViewById(R.id.btn_borrow);
@@ -103,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextView tv_num = findViewById(R.id.tv_num);
         tv_num.setOnClickListener(this);
 
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View customView = inflater.inflate(R.layout.pop_auth_layout, null);
 
         pb_loadingdata = customView.findViewById(R.id.pb_loadingdata);
@@ -320,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        allowDropDown();
         System.exit(0);//直接结束程序
     }
 
@@ -331,10 +348,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // 退出程序
             CardReadSerialPort.SingleInit().closeSerialPort();
             VendingSerialPort.SingleInit().closeSerialPort();
-            showNavigation();
+            //showNavigation();
             this.finish();
         }
     }
+
+    //禁止下拉
+    private void prohibitDropDown() {
+        manager = ((WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE));
+        WindowManager.LayoutParams localLayoutParams = new WindowManager.LayoutParams();
+        localLayoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
+        localLayoutParams.gravity = Gravity.TOP;
+        localLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                // this is to enable the notification to recieve touch events
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+                // Draws over status bar
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        localLayoutParams.height = (int) (50 * getResources().getDisplayMetrics().scaledDensity);
+        localLayoutParams.format = PixelFormat.TRANSPARENT;
+        manager.addView(customView, localLayoutParams);
+    }
+
+    WindowManager manager;
+
+    //允许下拉
+    private void allowDropDown() {
+        manager.removeView(customView);
+    }
+
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {

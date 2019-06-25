@@ -60,7 +60,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="设备编号：Test002"
                 android:textSize="21sp" />
 
             <TextView
@@ -68,7 +67,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="紧急联系人：孔建华 13003030330"
                 android:textSize="21sp" />
 
         </RelativeLayout>
