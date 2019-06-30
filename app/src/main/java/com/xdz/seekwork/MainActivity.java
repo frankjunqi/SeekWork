@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 授权弹框
         registerMachine();
 
-        EasyPermissions.requestPermissions(this, "请求权限", 12, PERMS_WRITE);
+        //EasyPermissions.requestPermissions(this, "请求权限", 12, PERMS_WRITE);
 
         //startActivity(new Intent(this, ManageActivity.class));
     }
