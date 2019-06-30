@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onTick(long millisUntilFinished) {
             if (btn_try != null) {
-                btn_try.setText((millisUntilFinished / 1000) + "秒后重试");
+                btn_try.setText("不可操作，" + (millisUntilFinished / 1000) + "秒后自动重试");
             }
         }
 
@@ -91,8 +91,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //mStatusBarManager = (StatusBarManager) mContext.getSystemService(Context.STATUS_BAR_SERVICE);
 
-        hideNavigation();
+        //hideNavigation();
         //prohibitDropDown();
+        //showNavigation();
         btn_take = findViewById(R.id.btn_take);
         btn_take.setOnClickListener(this);
         btn_borrow = findViewById(R.id.btn_borrow);
@@ -300,6 +301,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    /**
+     * 方法不能用，会导致屏幕不可触摸
+     *
+     * @return
+     */
     public boolean hideNavigation() {
         boolean ishide;
         try {
@@ -313,6 +319,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return ishide;
     }
 
+    /**
+     * 方法不能用，会导致屏幕不可触摸
+     *
+     * @return
+     */
     public boolean showNavigation() {
         boolean isshow;
         try {
@@ -336,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        allowDropDown();
+        //allowDropDown();
         System.exit(0);//直接结束程序
     }
 
