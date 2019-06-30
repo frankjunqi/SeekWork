@@ -41,7 +41,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 // 货道补货
-public class ManageListActivity extends AppCompatActivity implements View.OnClickListener {
+public class ManageListActivity extends BaseActivity implements View.OnClickListener {
 
 
     private TextView tv_take_back;
@@ -137,6 +137,8 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
                 .cancelable(false)
                 .build();
 
+        setWindowUIHide(materialDialog.getWindow());
+
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(outMetrics);
@@ -147,6 +149,7 @@ public class ManageListActivity extends AppCompatActivity implements View.OnClic
         tv_tips = customViewTip.findViewById(R.id.tv_tips);
         iv_tip_error = customViewTip.findViewById(R.id.iv_tip_error);
         tipViewDialog = new MaterialDialog.Builder(this).customView(customViewTip, false).build();
+        setWindowUIHide(tipViewDialog.getWindow());
 
         WindowManager.LayoutParams wl = tipViewDialog.getWindow().getAttributes();
         wl.width = widthPixels / 5 * 4;

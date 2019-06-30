@@ -40,7 +40,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 // 首页
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
+public class MainActivity extends BaseActivity implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
 
 
     //private StatusBarManager mStatusBarManager;
@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         promissionDialog = new MaterialDialog.Builder(this).customView(customView, false).build();
+        setWindowUIHide(promissionDialog.getWindow());
         promissionDialog.setCancelable(false);
 
         // 授权弹框
@@ -300,6 +301,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
+
+
 
     /**
      * 方法不能用，会导致屏幕不可触摸

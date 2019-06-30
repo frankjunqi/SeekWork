@@ -34,7 +34,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 // 打开串口
-public class OpenSerialActivity extends AppCompatActivity implements View.OnClickListener {
+public class OpenSerialActivity extends BaseActivity implements View.OnClickListener {
 
 
     private Button btn_zhu, btn_a, btn_b, btn_c;
@@ -91,7 +91,7 @@ public class OpenSerialActivity extends AppCompatActivity implements View.OnClic
         iv_tip_error = customViewTip.findViewById(R.id.iv_tip_error);
         iv_close = customViewTip.findViewById(R.id.iv_close);
         tipViewDialog = new MaterialDialog.Builder(this).customView(customViewTip, false).build();
-
+        setWindowUIHide(tipViewDialog.getWindow());
         iv_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

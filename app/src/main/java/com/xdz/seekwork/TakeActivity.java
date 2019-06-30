@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -42,7 +41,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 // 取货
-public class TakeActivity extends AppCompatActivity implements View.OnClickListener {
+public class TakeActivity extends BaseActivity implements View.OnClickListener {
 
     public String ActionType = "";
 
@@ -280,6 +279,7 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
 
         // 刷卡后续操作
         promissionDialog = new MaterialDialog.Builder(this).customView(customView, false).build();
+        setWindowUIHide(promissionDialog.getWindow());
 
         WindowManager.LayoutParams wlp = promissionDialog.getWindow().getAttributes();
         wlp.width = widthPixels - 88;
@@ -340,6 +340,8 @@ public class TakeActivity extends AppCompatActivity implements View.OnClickListe
         tv_tips = customViewTip.findViewById(R.id.tv_tips);
         iv_tip_error = customViewTip.findViewById(R.id.iv_tip_error);
         tipDialog = new MaterialDialog.Builder(this).customView(customViewTip, false).build();
+        setWindowUIHide(tipDialog.getWindow());
+
         WindowManager.LayoutParams wl = tipDialog.getWindow().getAttributes();
         DisplayMetrics outMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(outMetrics);

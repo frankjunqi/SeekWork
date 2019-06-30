@@ -12,7 +12,7 @@ import com.xdz.seekwork.util.SeekerSoftConstant;
 import com.xdz.seekwork.view.SingleCountDownView;
 
 // 管理
-public class ManageActivity extends AppCompatActivity implements View.OnClickListener {
+public class ManageActivity extends BaseActivity implements View.OnClickListener {
 
 
     private Button btn_add_pro, btn_open_box, btn_exit_sys, btn_exit_manager;
