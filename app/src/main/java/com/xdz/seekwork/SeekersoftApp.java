@@ -21,11 +21,10 @@ public class SeekersoftApp extends Application {
     public void onCreate() {
         super.onCreate();
         mSeekersoftApp = this;
-
+        // 初始化bugly
+        CrashReport.initCrashReport(this, "e14c2c60e1", true);
         // 初始化设备信息
         SeekerSoftConstant.DEVICEID = DeviceInfoTool.getDeviceId();
-        // 初始化bugly
-        CrashReport.initCrashReport(getApplicationContext(), "e14c2c60e1", true);
 
     }
 
