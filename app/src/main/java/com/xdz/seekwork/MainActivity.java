@@ -9,9 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.tencent.bugly.crashreport.CrashReport;
 import com.xdz.seekwork.network.api.Host;
 import com.xdz.seekwork.network.api.SeekWorkService;
 import com.xdz.seekwork.network.api.SrvResult;
@@ -146,7 +143,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         // 授权弹框
         registerMachine();
-
 
         //EasyPermissions.requestPermissions(this, "请求权限", 12, PERMS_WRITE);
 
