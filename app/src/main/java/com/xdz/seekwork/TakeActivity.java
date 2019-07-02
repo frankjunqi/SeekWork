@@ -141,7 +141,9 @@ public class TakeActivity extends BaseActivity implements View.OnClickListener {
                     @Override
                     public void run() {
                         // 读卡之后不接收读卡信息
-                        CardReadSerialPort.SingleInit().setOnDataReceiveListener(null);
+                        if (CardReadSerialPort.SingleInit() != null) {
+                            CardReadSerialPort.SingleInit().setOnDataReceiveListener(null);
+                        }
 
                         // 初始化界面
                         rl_tip.setVisibility(View.GONE);
@@ -234,7 +236,9 @@ public class TakeActivity extends BaseActivity implements View.OnClickListener {
 
 
                         // 开去串口读卡器
-                        CardReadSerialPort.SingleInit().setOnDataReceiveListener(onDataReceiveListener);
+                        if (CardReadSerialPort.SingleInit() != null) {
+                            CardReadSerialPort.SingleInit().setOnDataReceiveListener(onDataReceiveListener);
+                        }
 
                         // 授权弹框
                         promissionDialog.show();

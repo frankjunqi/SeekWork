@@ -190,7 +190,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             error = error + "柜子串口打开失败";
         }
 
-        error = "";
         if (!TextUtils.isEmpty(error)) {
             if (!promissionDialog.isShowing()) {
                 promissionDialog.show();
@@ -344,7 +343,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onStop() {
         super.onStop();
-        CardReadSerialPort.SingleInit().setOnDataReceiveListener(null);
+        if (CardReadSerialPort.SingleInit() != null) {
+            CardReadSerialPort.SingleInit().setOnDataReceiveListener(null);
+        }
     }
 
     @Override
@@ -360,8 +361,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         int exitFlag = intent.getIntExtra(SeekerSoftConstant.EXITAPP, 0);
         if (exitFlag == 1) {
             // 退出程序
-            CardReadSerialPort.SingleInit().closeSerialPort();
-            VendingSerialPort.SingleInit().closeSerialPort();
+            if (CardReadSerialPort.SingleInit() != null) {
+                CardReadSerialPort.SingleInit().closeSerialPort();
+            }
+
+            if (VendingSerialPort.SingleInit() != null) {
+                VendingSerialPort.SingleInit().closeSerialPort();
+            }
             //showNavigation();
             this.finish();
         }

@@ -45,6 +45,12 @@ public class VendingSerialPort {
         return portUtil;
     }
 
+    public void main(boolean isKezi) {
+        ShipmentCommad shipmentCommad = new ShipmentCommad(11);
+        shipmentCommad.setGEZI(isKezi);
+        commadTakeOut(shipmentCommad);
+    }
+
     // 出货
     public void commadTakeOut(ShipmentCommad shipmentCommad) {
         ShipmentCommad shipmentObject = shipmentCommad;
@@ -56,7 +62,7 @@ public class VendingSerialPort {
                 byte[] sendData = new byte[12];
                 sendData[0] = (byte) 0xFF;
                 sendData[1] = (byte) 0x0C;
-                sendData[2] = (byte) 0x00;
+                sendData[2] = (byte) 0x01;
                 sendData[3] = (byte) 0xA3;// A3
                 sendData[4] = (byte) shipmentObject.containerNum;
                 sendData[5] = (byte) shipmentObject.getProHang();
@@ -73,7 +79,7 @@ public class VendingSerialPort {
                 byte[] sendData = new byte[10];
                 sendData[0] = (byte) 0xFF;
                 sendData[1] = (byte) 0x0A;
-                sendData[2] = (byte) 0x01;
+                sendData[2] = (byte) 0x02;
                 sendData[3] = (byte) 0xA2;
                 sendData[4] = (byte) shipmentObject.containerNum;
                 sendData[5] = (byte) shipmentObject.getProHang();
@@ -124,6 +130,7 @@ public class VendingSerialPort {
         data[8] = (byte) up;
         return data;
     }
+
 
     /**
      * 数据回调接口
