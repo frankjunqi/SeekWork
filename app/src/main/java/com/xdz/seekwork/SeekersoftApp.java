@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xdz.seekwork.util.DeviceInfoTool;
 import com.xdz.seekwork.util.SeekerSoftConstant;
 
@@ -20,10 +21,10 @@ public class SeekersoftApp extends Application {
     public void onCreate() {
         super.onCreate();
         mSeekersoftApp = this;
-
+        // 初始化bugly
+        CrashReport.initCrashReport(this, "e14c2c60e1", true);
         // 初始化设备信息
         SeekerSoftConstant.DEVICEID = DeviceInfoTool.getDeviceId();
-
 
     }
 
