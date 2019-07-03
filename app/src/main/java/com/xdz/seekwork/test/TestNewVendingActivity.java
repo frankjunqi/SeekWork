@@ -60,6 +60,9 @@ public class TestNewVendingActivity extends AppCompatActivity implements View.On
                 int row = Integer.parseInt(row_str);
                 tv_showdata.setText(col + " " + row);
 
+                ShipmentCommad shipmentCommad = new ShipmentCommad("1,2");
+                shipmentCommad.setContainerNum(0x01);
+
                 VendingSerialPort.SingleInit().setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
                     @Override
                     public void onDataReceiveString(final String ResultStr) {
@@ -68,12 +71,14 @@ public class TestNewVendingActivity extends AppCompatActivity implements View.On
                             @Override
                             public void run() {
                                 byte[] bytes = ResultStr.getBytes();
-                                VendingSerialPort.SingleInit().commadTakeOut(new ShipmentCommad(12));
+                                ShipmentCommad shipmentCommad = new ShipmentCommad("1,2");
+                                shipmentCommad.setContainerNum(0x01);
+                                VendingSerialPort.SingleInit().commadTakeOut(shipmentCommad);
 
                             }
                         });
                     }
-                }).commadTakeOut(new ShipmentCommad(12));
+                }).commadTakeOut(shipmentCommad);
 
                 break;
 
@@ -89,6 +94,9 @@ public class TestNewVendingActivity extends AppCompatActivity implements View.On
                 int row1 = Integer.parseInt(row_str_);
                 tv_showdata.setText(col1 + " " + row1);
 
+                ShipmentCommad shipmentCommad1 = new ShipmentCommad("1,2");
+                shipmentCommad1.setContainerNum(0x01);
+
                 VendingSerialPort.SingleInit().setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
                     @Override
                     public void onDataReceiveString(final String ResultStr) {
@@ -101,7 +109,7 @@ public class TestNewVendingActivity extends AppCompatActivity implements View.On
                             }
                         });
                     }
-                }).commadTakeOut(new ShipmentCommad(12));
+                }).commadTakeOut(shipmentCommad1);
                 break;
 
         }

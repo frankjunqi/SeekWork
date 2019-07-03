@@ -183,11 +183,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         VendingSerialPort vendingSerialPort = VendingSerialPort.SingleInit();
         String error = "";
         if (cardReadSerialPort == null) {
-            error = "读卡器串口打开失败。\n";
+            error = "读卡器串口打开失败，检查/dev/ttyS0 。\n";
         }
 
         if (vendingSerialPort == null) {
-            error = error + "柜子串口打开失败";
+            error = error + "柜子串口打开失败，检查/dev/ttyS3 。";
         }
 
         if (!TextUtils.isEmpty(error)) {

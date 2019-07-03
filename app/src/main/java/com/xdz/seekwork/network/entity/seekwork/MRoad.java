@@ -13,8 +13,8 @@ public class MRoad implements Serializable {
     private String CabNo;
     //货道编号
     private String RoadCode;
-    //物理地址
-    private int RealCode;
+    //物理地址 10,11
+    private String RealCode;
     //产品名称
     private String ProductName;
 
@@ -52,11 +52,11 @@ public class MRoad implements Serializable {
         RoadCode = roadCode;
     }
 
-    public int getRealCode() {
+    public String getRealCode() {
         return RealCode;
     }
 
-    public void setRealCode(int realCode) {
+    public void setRealCode(String realCode) {
         RealCode = realCode;
     }
 
@@ -99,6 +99,7 @@ public class MRoad implements Serializable {
     public void setDis(boolean dis) {
         IsDis = dis;
     }
+
     //用户界面上填写的差异数量
     private int Qty;
     //补货数
@@ -123,5 +124,20 @@ public class MRoad implements Serializable {
 
     // 差异补货的数量
     private int chaLackNum;
+
+
+    public int getContainer() {
+        if ("主柜".equals(getCabNo())) {
+            return 0x01;
+        } else if ("A".equals(getCabNo())) {
+            return 0x02;
+        } else if ("B".equals(getCabNo())) {
+            return 0x03;
+        } else if ("C".equals(getCabNo())) {
+            return 0x04;
+        } else {
+            return 0x01;
+        }
+    }
 
 }

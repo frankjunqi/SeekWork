@@ -7,19 +7,23 @@ package com.xdz.seekwork.serialport;
 public class ShipmentCommad {
 
 
-    public ShipmentCommad(int RealRoad) {
+    /**
+     * @param RealRoad 11,10 用逗号隔开
+     */
+    public ShipmentCommad(String RealRoad) {
         setReaRoad(RealRoad);
     }
 
-    public int getReaRoad() {
+    public String getReaRoad() {
         return ReaRoad;
     }
 
-    public void setReaRoad(int reaRoad) {
+    public void setReaRoad(String reaRoad) {
         ReaRoad = reaRoad;
-        if (ReaRoad > 0 && ReaRoad < 100) {
-            proHang = ReaRoad / 10;
-            proLie = ReaRoad % 10;
+        String[] strs = reaRoad.split(",");
+        if (strs != null && strs.length == 2) {
+            setProHang(Integer.valueOf(strs[0]));
+            setProLie(Integer.valueOf(strs[1]));
         }
     }
 
@@ -39,8 +43,17 @@ public class ShipmentCommad {
         this.proLie = proLie;
     }
 
-    private int ReaRoad;
-    public int containerNum = 0x0B;// 货柜编号
+    private String ReaRoad;
+
+    public int getContainerNum() {
+        return containerNum;
+    }
+
+    public void setContainerNum(int containerNum) {
+        this.containerNum = containerNum;
+    }
+
+    private int containerNum = 0x01;// 货柜编号 0x01 0x02 0x03 0x04 开始
     private int proHang = 0x01;// 行号
     private int proLie = 0x02;// 列号
 

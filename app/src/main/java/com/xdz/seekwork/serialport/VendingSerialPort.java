@@ -46,8 +46,9 @@ public class VendingSerialPort {
     }
 
     public void main(boolean isKezi) {
-        ShipmentCommad shipmentCommad = new ShipmentCommad(11);
+        ShipmentCommad shipmentCommad = new ShipmentCommad("1,1");
         shipmentCommad.setGEZI(isKezi);
+        shipmentCommad.setContainerNum(0x01);
         commadTakeOut(shipmentCommad);
     }
 
@@ -62,9 +63,9 @@ public class VendingSerialPort {
                 byte[] sendData = new byte[12];
                 sendData[0] = (byte) 0xFF;
                 sendData[1] = (byte) 0x0C;
-                sendData[2] = (byte) 0x01;
+                sendData[2] = (byte) shipmentObject.getContainerNum();
                 sendData[3] = (byte) 0xA3;// A3
-                sendData[4] = (byte) shipmentObject.containerNum;
+                sendData[4] = (byte) 0x0B;
                 sendData[5] = (byte) shipmentObject.getProHang();
                 sendData[6] = (byte) shipmentObject.getProLie();
                 sendData[7] = 0x01;
@@ -79,9 +80,9 @@ public class VendingSerialPort {
                 byte[] sendData = new byte[10];
                 sendData[0] = (byte) 0xFF;
                 sendData[1] = (byte) 0x0A;
-                sendData[2] = (byte) 0x02;
+                sendData[2] = (byte) shipmentObject.getContainerNum();
                 sendData[3] = (byte) 0xA2;
-                sendData[4] = (byte) shipmentObject.containerNum;
+                sendData[4] = (byte) 0x0B;
                 sendData[5] = (byte) shipmentObject.getProHang();
                 sendData[6] = (byte) shipmentObject.getProLie();
                 sendData[7] = 0;

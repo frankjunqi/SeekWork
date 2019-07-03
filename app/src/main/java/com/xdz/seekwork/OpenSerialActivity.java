@@ -198,24 +198,28 @@ public class OpenSerialActivity extends BaseActivity implements View.OnClickList
             for (int i = 0; i < zhuList.size(); i++) {
                 ShipmentCommad shipmentCommad = new ShipmentCommad(zhuList.get(i).getRealCode());
                 shipmentCommad.setGEZI(false);
+                shipmentCommad.setContainerNum(zhuList.get(i).getContainer());
                 shipmentCommads.add(shipmentCommad);
             }
         } else if (chooseFlag == 1) {
             for (int i = 0; i < aList.size(); i++) {
                 ShipmentCommad shipmentCommad = new ShipmentCommad(aList.get(i).getRealCode());
                 shipmentCommad.setGEZI(true);
+                shipmentCommad.setContainerNum(aList.get(i).getContainer());
                 shipmentCommads.add(shipmentCommad);
             }
         } else if (chooseFlag == 2) {
             for (int i = 0; i < bList.size(); i++) {
                 ShipmentCommad shipmentCommad = new ShipmentCommad(bList.get(i).getRealCode());
                 shipmentCommad.setGEZI(true);
+                shipmentCommad.setContainerNum(bList.get(i).getContainer());
                 shipmentCommads.add(shipmentCommad);
             }
         } else if (chooseFlag == 3) {
             for (int i = 0; i < cList.size(); i++) {
                 ShipmentCommad shipmentCommad = new ShipmentCommad(cList.get(i).getRealCode());
                 shipmentCommad.setGEZI(true);
+                shipmentCommad.setContainerNum(cList.get(i).getContainer());
                 shipmentCommads.add(shipmentCommad);
             }
         }

@@ -332,7 +332,9 @@ public class TakeActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onSingleCountDownEnd() {
                 // TODO pop take 倒计时结束，关闭页面元素
-                promissionDialog.dismiss();
+                if (promissionDialog != null) {
+                    promissionDialog.dismiss();
+                }
             }
         });
     }
@@ -484,7 +486,7 @@ public class TakeActivity extends BaseActivity implements View.OnClickListener {
                     // 成功逻辑
                     if (response.body().getData().isAuthorize()) {
                         // 硬件编号，用户出货
-                        int realRoad = mRoad.getRealCode();
+                        String realRoad = mRoad.getRealCode();
 
                         // 记住出货第几个
                         flag = 0;
@@ -494,11 +496,14 @@ public class TakeActivity extends BaseActivity implements View.OnClickListener {
                             // 格子(去除测试代码)
                             ShipmentCommad shipmentCommad = new ShipmentCommad(realRoad);
                             shipmentCommad.setGEZI(true);
+                            shipmentCommad.setContainerNum(mRoad.getContainer());
                             list.add(shipmentCommad);
                         } else {
                             // 螺纹 (去除测试代码)
                             for (int i = 0; i < choostNum; i++) {
-                                list.add(new ShipmentCommad(realRoad));
+                                ShipmentCommad shipmentCommad = new ShipmentCommad(realRoad);
+                                shipmentCommad.setContainerNum(mRoad.getContainer());
+                                list.add(shipmentCommad);
                             }
                         }
 
@@ -670,8 +675,9 @@ public class TakeActivity extends BaseActivity implements View.OnClickListener {
             public void onResponse(Call<SrvResult<Boolean>> call, final Response<SrvResult<Boolean>> response) {
                 if (response != null && response.body() != null && response.body().getData()) {
                     // 操作格子柜 ，硬件编号，用户出货
-                    int realRoad = mRoad.getRealCode();
+                    String realRoad = mRoad.getRealCode();
                     final ShipmentCommad shipmentCommad = new ShipmentCommad(realRoad);
+                    shipmentCommad.setContainerNum(mRoad.getContainer());
                     shipmentCommad.setGEZI(true);
 
                     VendingSerialPort.SingleInit().setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
