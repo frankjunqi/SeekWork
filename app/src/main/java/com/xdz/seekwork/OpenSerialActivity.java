@@ -53,6 +53,8 @@ public class OpenSerialActivity extends BaseActivity implements View.OnClickList
     private ArrayList<MRoad> bList = new ArrayList<>();
     private ArrayList<MRoad> cList = new ArrayList<>();
 
+    private boolean isClose = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +97,9 @@ public class OpenSerialActivity extends BaseActivity implements View.OnClickList
         iv_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                isClose = true;
+
                 if (tipViewDialog != null && tipViewDialog.isShowing()) {
                     tipViewDialog.dismiss();
                 }
@@ -188,35 +193,35 @@ public class OpenSerialActivity extends BaseActivity implements View.OnClickList
 
     private void open(final int chooseFlag) {
         showTipDialog("");
-        iv_close.setVisibility(View.INVISIBLE);
+        iv_close.setVisibility(View.VISIBLE);
         flag = 0;
         sb = new StringBuffer("");
 
         final ArrayList<ShipmentCommad> shipmentCommads = new ArrayList<>();
 
         if (chooseFlag == 0) {
-            for (int i = 0; i < zhuList.size(); i++) {
+            for (int i = 0; zhuList != null && i < zhuList.size(); i++) {
                 ShipmentCommad shipmentCommad = new ShipmentCommad(zhuList.get(i).getRealCode());
                 shipmentCommad.setGEZI(false);
                 shipmentCommad.setContainerNum(zhuList.get(i).getContainer());
                 shipmentCommads.add(shipmentCommad);
             }
         } else if (chooseFlag == 1) {
-            for (int i = 0; i < aList.size(); i++) {
+            for (int i = 0; aList != null && i < aList.size(); i++) {
                 ShipmentCommad shipmentCommad = new ShipmentCommad(aList.get(i).getRealCode());
                 shipmentCommad.setGEZI(true);
                 shipmentCommad.setContainerNum(aList.get(i).getContainer());
                 shipmentCommads.add(shipmentCommad);
             }
         } else if (chooseFlag == 2) {
-            for (int i = 0; i < bList.size(); i++) {
+            for (int i = 0; bList != null && i < bList.size(); i++) {
                 ShipmentCommad shipmentCommad = new ShipmentCommad(bList.get(i).getRealCode());
                 shipmentCommad.setGEZI(true);
                 shipmentCommad.setContainerNum(bList.get(i).getContainer());
                 shipmentCommads.add(shipmentCommad);
             }
         } else if (chooseFlag == 3) {
-            for (int i = 0; i < cList.size(); i++) {
+            for (int i = 0; cList != null && i < cList.size(); i++) {
                 ShipmentCommad shipmentCommad = new ShipmentCommad(cList.get(i).getRealCode());
                 shipmentCommad.setGEZI(true);
                 shipmentCommad.setContainerNum(cList.get(i).getContainer());
@@ -225,48 +230,60 @@ public class OpenSerialActivity extends BaseActivity implements View.OnClickList
         }
 
 
-        VendingSerialPort.SingleInit().setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
-            @Override
-            public void onDataReceiveString(final String ResultStr) {
+        if (shipmentCommads != null && shipmentCommads.size() > 0) {
+            VendingSerialPort.SingleInit().setOnDataReceiveListener(new VendingSerialPort.OnDataReceiveListener() {
+                @Override
+                public void onDataReceiveString(final String ResultStr) {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
 
-                        MRoad mRoad = null;
-                        if (chooseFlag == 0) {
-                            mRoad = zhuList.get(flag);
-                        } else if (chooseFlag == 1) {
-                            mRoad = aList.get(flag);
-                        } else if (chooseFlag == 2) {
-                            mRoad = bList.get(flag);
-                        } else if (chooseFlag == 3) {
-                            mRoad = cList.get(flag);
+                            MRoad mRoad = null;
+                            if (chooseFlag == 0 && zhuList != null && zhuList.size() > 0) {
+                                mRoad = zhuList.get(flag);
+                            } else if (chooseFlag == 1 && aList != null && aList.size() > 0) {
+                                mRoad = aList.get(flag);
+                            } else if (chooseFlag == 2 && bList != null && bList.size() > 0) {
+                                mRoad = bList.get(flag);
+                            } else if (chooseFlag == 3 && cList != null && cList.size() > 0) {
+                                mRoad = cList.get(flag);
+                            }
+
+                            // 串口操作成功
+                            ShipmentResult shipmentResult = SerialResultUtil.handleResult(ResultStr);
+                            sb.append("货道号: " + mRoad.getCabNo() + mRoad.getRoadCode() + ",产品名称: " + mRoad.getProductName() + "。\n");
+                            sb.append(shipmentResult.getResultMsg() + "\n\n");
+
+                            // 标记+1
+                            flag++;
+
+                            showTipDialog(sb.toString());
+
+                            // 判断是否继续下一个串口打开
+                            if (!isClose) {
+                                // close tip dialog
+                                isClose = false;
+                                if (tipViewDialog != null && tipViewDialog.isShowing()) {
+                                    tipViewDialog.dismiss();
+                                }
+                            } else if (shipmentCommads.size() > flag) {
+                                VendingSerialPort.SingleInit().commadTakeOut(shipmentCommads.get(flag));
+                            } else {
+                                // 所有的都打开了的操作
+                                iv_close.setVisibility(View.VISIBLE);
+                            }
                         }
-
-                        // 串口操作成功
-                        ShipmentResult shipmentResult = SerialResultUtil.handleResult(ResultStr);
-                        sb.append("货道号: " + mRoad.getCabNo() + mRoad.getRoadCode() + ",产品名称: " + mRoad.getProductName() + "。\n");
-                        sb.append(shipmentResult.getResultMsg() + "\n\n");
-
-                        // 标记+1
-                        flag++;
-
-                        showTipDialog(sb.toString());
-
-                        // 判断是否继续下一个串口打开
-                        if (shipmentCommads.size() > flag) {
-                            VendingSerialPort.SingleInit().commadTakeOut(shipmentCommads.get(flag));
-                        } else {
-                            // 所有的都打开了的操作
-                            iv_close.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
+                    });
 
 
-            }
-        }).commadTakeOut(shipmentCommads.get(flag));
+                }
+            }).commadTakeOut(shipmentCommads.get(flag));
+        } else {
+            showTipDialog("提示：货道暂无数据。");
+        }
+
+
     }
 
 }
