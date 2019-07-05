@@ -9,7 +9,7 @@ public class SeekerSoftConstant {
     public static final boolean DEBUG = true;
 
     // 设备号
-    public static String DEVICEID = "AD_01";
+    public static String DEVICEID = "84b7374875da5138";
 
     // 网络是否链接
     public static boolean NETWORKCONNECT = true;

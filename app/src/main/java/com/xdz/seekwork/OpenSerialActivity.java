@@ -168,15 +168,19 @@ public class OpenSerialActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_zhu:
+                isClose = false;
                 open(0);
                 break;
             case R.id.btn_a:
+                isClose = false;
                 open(1);
                 break;
             case R.id.btn_b:
+                isClose = false;
                 open(2);
                 break;
             case R.id.btn_c:
+                isClose = false;
                 open(3);
                 break;
             case R.id.tv_take_back:
@@ -258,17 +262,15 @@ public class OpenSerialActivity extends BaseActivity implements View.OnClickList
                             // 标记+1
                             flag++;
 
-                            showTipDialog(sb.toString());
-
                             // 判断是否继续下一个串口打开
-                            if (!isClose) {
+                            if (isClose) {
                                 // close tip dialog
-                                isClose = false;
                                 if (tipViewDialog != null && tipViewDialog.isShowing()) {
                                     tipViewDialog.dismiss();
                                 }
                             } else if (shipmentCommads.size() > flag) {
                                 VendingSerialPort.SingleInit().commadTakeOut(shipmentCommads.get(flag));
+                                showTipDialog(sb.toString());
                             } else {
                                 // 所有的都打开了的操作
                                 iv_close.setVisibility(View.VISIBLE);

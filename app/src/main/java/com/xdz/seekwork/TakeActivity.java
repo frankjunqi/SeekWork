@@ -332,7 +332,7 @@ public class TakeActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onSingleCountDownEnd() {
                 // TODO pop take 倒计时结束，关闭页面元素
-                if (promissionDialog != null) {
+                if (promissionDialog != null && promissionDialog.isShowing()) {
                     promissionDialog.dismiss();
                 }
             }
@@ -734,6 +734,16 @@ public class TakeActivity extends BaseActivity implements View.OnClickListener {
         if (singleCountDownViewPop != null) {
             singleCountDownViewPop.stopCountDown();
             singleCountDownViewPop = null;
+        }
+
+        if (promissionDialog != null && promissionDialog.isShowing()) {
+            promissionDialog.dismiss();
+            promissionDialog = null;
+        }
+
+        if (tipDialog != null && tipDialog.isShowing()) {
+            tipDialog.dismiss();
+            tipDialog = null;
         }
     }
 
